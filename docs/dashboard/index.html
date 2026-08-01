@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Build OS dashboard — Nik Jain's craft level across nine pillars, project by project.">
+<meta name="description" content="Build OS dashboard: Nik Jain's craft level across nine pillars, project by project.">
 <title>Dashboard · Build OS · Nik Jain</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -125,7 +125,7 @@
   <header class="page">
     <div class="eyebrow">Build OS · Dashboard</div>
     <h1>Craft level, measured.</h1>
-    <p class="sub">How I'm doing across the nine craft pillars, project by project — powered by each repo's <span style="font-family:var(--mono);font-size:14px">scorecard.json</span>, scored against written rubrics, never eyeballed.</p>
+    <p class="sub">How I'm doing across the nine craft pillars, project by project, powered by each repo's <span style="font-family:var(--mono);font-size:14px">scorecard.json</span>, scored against written rubrics, never eyeballed.</p>
     <div id="banner" class="banner"></div>
   </header>
   <div class="ask">
@@ -141,17 +141,17 @@
   <div class="kpis" id="kpis"></div>
   <div class="grid">
     <div class="card">
-      <div class="card-head"><div><h2>Current craft level</h2><div class="h-sub">Any project, all pillars — pick one to compare</div></div>
+      <div class="card-head"><div><h2>Current craft level</h2><div class="h-sub">Any project, all pillars. Pick one to compare</div></div>
         <select class="search" id="radarSel" aria-label="Choose project for radar" style="min-width:150px"></select></div>
       <canvas id="radar" height="260"></canvas></div>
-    <div class="card"><h2>Improvement over time</h2><div class="h-sub">Overall score across projects — am I compounding?</div><canvas id="trend" height="260"></canvas></div>
+    <div class="card"><h2>Improvement over time</h2><div class="h-sub">Overall score across projects. Am I compounding?</div><canvas id="trend" height="260"></canvas></div>
     <div class="card full">
-      <div class="card-head"><div><h2>Projects</h2><div class="h-sub">Per-project scorecards — grade, pillars, artifacts, next focus</div></div>
-        <input class="search" id="pSearch" type="search" placeholder="Filter projects — name, type, pillar…" aria-label="Filter projects"></div>
+      <div class="card-head"><div><h2>Projects</h2><div class="h-sub">Per-project scorecards: grade, pillars, artifacts, next focus</div></div>
+        <input class="search" id="pSearch" type="search" placeholder="Filter projects: name, type, pillar…" aria-label="Filter projects"></div>
       <div class="pcards" id="pcards"></div><div class="empty-note" id="pEmpty" style="display:none">No projects match that filter.</div></div>
     <div class="card full">
-      <div class="card-head"><div><h2>Question heatmap</h2><div class="h-sub">Every question, every project — strengths and where the next gains are</div></div>
-        <input class="search" id="hSearch" type="search" placeholder="Filter questions — label, id, or weak/good/great…" aria-label="Filter heatmap questions"></div>
+      <div class="card-head"><div><h2>Question heatmap</h2><div class="h-sub">Every question, every project: strengths and where the next gains are</div></div>
+        <input class="search" id="hSearch" type="search" placeholder="Filter questions: label, id, or weak/good/great…" aria-label="Filter heatmap questions"></div>
 
       <div style="overflow:auto"><table id="heat"></table></div><div class="empty-note" id="hEmpty" style="display:none">No questions match that filter.</div>
       <div class="legend"><span><i class="cell g-great"></i> great</span><span><i class="cell g-good"></i> good</span><span><i class="cell g-weak"></i> weak</span><span><i class="cell g-na"></i> not asked</span></div>
@@ -160,7 +160,7 @@
 </div>
 
 <script>
-// Theme (matches nikjain15.github.io) — charts re-read CSS vars on toggle via reload.
+// Theme (matches nikjain15.github.io): charts re-read CSS vars on toggle via reload.
 const root=document.documentElement, KEY='theme';
 const savedTheme=localStorage.getItem(KEY); if(savedTheme) root.setAttribute('data-theme',savedTheme);
 document.getElementById('themeToggle').addEventListener('click',()=>{
@@ -195,7 +195,7 @@ async function load(){
   try{const r=await fetch('../data/scorecards.json',{cache:'no-store'});
     if(r.ok){const d=await r.json(); if(d.projects&&d.projects.length) return d;}}catch(e){}
   const b=document.getElementById('banner');
-  b.textContent="Showing SAMPLE (demo) data — no real project scorecards published yet. Real scores land in data/scorecards.json after each Build OS run.";
+  b.textContent="Showing SAMPLE (demo) data. No real project scorecards published yet. Real scores land in data/scorecards.json after each Build OS run.";
   b.classList.add('show');
   return SAMPLE;
 }
@@ -207,7 +207,7 @@ function render(data){
   const drift=P.filter(p=>{const v=PILLARS.map(k=>p.pillars[k]).filter(x=>x!=null);
     return v.length&&Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)!==p.overall;}).map(p=>p.project);
   if(drift.length){const b=document.getElementById('banner');
-    b.textContent+=` ⚠ overall ≠ pillar mean for: ${drift.join(', ')} — recompute per §12.`; b.classList.add('show');}
+    b.textContent+=` ⚠ overall ≠ pillar mean for: ${drift.join(', ')}. Recompute per §12.`; b.classList.add('show');}
   document.getElementById('focus').innerHTML=`Now sharpening: <b>${latest.weakest_pillar}</b>. ${latest.next_focus||''}`;
   const first=P[0].overall, delta=latest.overall-first;
   document.getElementById('kpis').innerHTML=`
@@ -241,7 +241,7 @@ function render(data){
   // Project cards (data-q carries searchable text for the filter)
   document.getElementById('pcards').innerHTML=P.slice().reverse().map(p=>{
     const arts=Object.entries(p.artifacts).map(([k,v])=>`<span class="art ${v?'ok':'no'}">${v?'✓':'✗'} ${k.replace('.md','')}</span>`).join('');
-    const pills=PILLARS.map(k=>`<div class="pill"><span>${k}</span><span class="num">${p.pillars[k]==null?'—':p.pillars[k]+'/10'}</span></div>`).join('');
+    const pills=PILLARS.map(k=>`<div class="pill"><span>${k}</span><span class="num">${p.pillars[k]==null?'n/a':p.pillars[k]+'/10'}</span></div>`).join('');
     const hay=[p.title,p.project,p.type,p.weakest_pillar,p.next_focus].join(' ').toLowerCase();
     return `<div class="pcard" data-q="${hay.replace(/"/g,'')}"><div class="top"><span class="name">${p.title}</span><span class="score">${p.overall}<span class="u">/100</span></span></div>
       <div class="bar"><i style="width:${p.overall}%"></i></div>
@@ -272,7 +272,7 @@ function wireFilter(inputId, selector, emptyId){
   });
 }
 
-// ---------- Ask Build OS — a small agent over the live scorecard data, with memory ----------
+// ---------- Ask Build OS: a small agent over the live scorecard data, with memory ----------
 let DATA=null;
 const MEM={history:[],lastProject:null,lastPillar:null};
 try{Object.assign(MEM,JSON.parse(sessionStorage.getItem('askMem')||'{}'));}catch(e){}
@@ -288,19 +288,19 @@ function pillarStats(P){
   return out;
 }
 function pillarLine(k,s,sample){
-  const dir=s.latest>s.first?` — up from ${s.first} on the first project`:(s.latest===s.best?` — held at its best`:``);
+  const dir=s.latest>s.first?`, up from ${s.first} on the first project`:(s.latest===s.best?`, held at its best`:``);
   return `${fmtP(k)} is at <b>${s.latest}/10</b> on the latest build${dir} (avg ${s.avg} across projects).${sample}`;
 }
 function projectLine(p,sample){
   const have=Object.entries(p.artifacts).filter(([,v])=>v).map(([k])=>k.replace('.md',''));
-  return `${fmtP(p.title)} (${p.type}, started ${p.date}) scores <b>${p.overall}/100</b>. ${p.notes?p.notes.split('Pillar math')[0].replace(/^Scored via[^—]+— grades from evidence, not self-report\.\s*/,''):''} Shipped artifacts: ${have.join(', ')}. Now sharpening: ${p.weakest_pillar} — ${p.next_focus||''}${sample}`;
+  return `${fmtP(p.title)} (${p.type}, started ${p.date}) scores <b>${p.overall}/100</b>. ${p.notes?p.notes.split('Pillar math')[0].replace(/^Scored via[^.]+\. Grades from evidence, not self-report\.\s*/,''):''} Shipped artifacts: ${have.join(', ')}. Now sharpening: ${p.weakest_pillar}. ${p.next_focus||''}${sample}`;
 }
 function answer(qRaw){
   const q=qRaw.toLowerCase();
   if(!DATA||!DATA.projects.length)return "No data loaded yet.";
   const P=DATA.projects.slice().sort((a,b)=>a.date.localeCompare(b.date));
   const latest=P[P.length-1], stats=pillarStats(P);
-  const sample=DATA===SAMPLE?" (Heads up: this is sample data — real scorecards land automatically after each Build OS run.)":"";
+  const sample=DATA===SAMPLE?" (Heads up: this is sample data. Real scorecards land automatically after each Build OS run.)":"";
   // resolve entities (and remember them)
   let pillar=null, project=null;
   for(const k of PILLARS){ if(q.includes(k.toLowerCase())||q.includes(k.toLowerCase().split(' ')[0])){pillar=k;break;} }
@@ -311,24 +311,24 @@ function answer(qRaw){
   if(pillar)MEM.lastPillar=pillar; if(project)MEM.lastProject=project.title; remember();
 
   if(/real|fake|sample|demo/.test(q))
-    return DATA===SAMPLE?"Right now you're seeing <b>sample data</b> — real scorecards land automatically after each Build OS run.":"This is <b>real data</b>: each score comes from a Build OS gap audit of the public repo — artifacts, tests, evals and CI actually present in the file tree. Every claim here is checkable on GitHub.";
+    return DATA===SAMPLE?"Right now you're seeing <b>sample data</b>. Real scorecards land automatically after each Build OS run.":"This is <b>real data</b>: each score comes from a Build OS gap audit of the public repo: artifacts, tests, evals and CI actually present in the file tree. Every claim here is checkable on GitHub.";
   if(/what is|how does (this|it) work|explain|methodology|how.*scored/.test(q))
-    return `Build OS is Nik's product development strategy as running code. Every project is audited against nine craft pillars — from product judgment to safety to economics — with grades tied to evidence in the repo, and the arithmetic shown. What each build teaches becomes a new question for the next one, so the bar compounds.${sample}`;
+    return `Build OS is Nik's product development strategy as running code. Every project is audited against nine craft pillars, from product judgment to safety to economics, with grades tied to evidence in the repo, and the arithmetic shown. What each build teaches becomes a new question for the next one, so the bar compounds.${sample}`;
   if(/nine pillars|which pillars|what pillars|list.*pillars/.test(q))
     return `The nine pillars: ${PILLARS.map(fmtP).join(' · ')}. Each one is proven by artifacts and graded questions, never vibes.`;
   if(project&&pillar){
     const v=project.pillars[pillar];
-    return v==null?`${fmtP(project.title)} hasn't been graded on ${pillar} yet — Build OS shows that as an open gap rather than inventing a number.`:`${fmtP(project.title)} scores <b>${v}/10</b> on ${pillar}.${sample}`;
+    return v==null?`${fmtP(project.title)} hasn't been graded on ${pillar} yet. Build OS shows that as an open gap rather than inventing a number.`:`${fmtP(project.title)} scores <b>${v}/10</b> on ${pillar}.${sample}`;
   }
   if(project)return projectLine(project,sample);
   if(pillar){const s=stats[pillar];
-    return s?pillarLine(pillar,s,sample):`${fmtP(pillar)} hasn't been graded yet — shown as an open gap, never a guessed number.`;}
+    return s?pillarLine(pillar,s,sample):`${fmtP(pillar)} hasn't been graded yet. Shown as an open gap, never a guessed number.`;}
   if(/strong|best|top|standout|stand out|good at|excel|highlight/.test(q)){
     const top=Object.entries(stats).sort((a,b)=>b[1].latest-a[1].latest).slice(0,3);
     return `Standout pillars right now: ${top.map(([k,s])=>`${fmtP(k)} (${s.latest}/10)`).join(', ')}.${sample}`;
   }
   if(/sharpen|focus|next|working on|improv|weak|growth/.test(q))
-    return `The system always names one thing to sharpen next — right now that's ${fmtP(latest.weakest_pillar)}: ${latest.next_focus||''} That's the loop working, not a gap being hidden.${sample}`;
+    return `The system always names one thing to sharpen next. Right now that's ${fmtP(latest.weakest_pillar)}: ${latest.next_focus||''} That's the loop working, not a gap being hidden.${sample}`;
   if(/trend|compound|progress|better|over time|journey/.test(q)){
     const per=Object.entries(stats).filter(([,s])=>s.latest>s.first).map(([k,s])=>`${k} ${s.first}→${s.latest}`).join(' · ');
     return `Across ${P.length} projects the overall went <b>${P[0].overall} → ${latest.overall}</b>. Pillars on the rise: ${per||'holding steady at a high bar'}.${sample}`;
@@ -341,9 +341,9 @@ function answer(qRaw){
     const tally={};
     P.forEach(p=>(p.questions||[]).forEach(x=>{(tally[x.label]=tally[x.label]||[]).push(x.grade);}));
     const great=Object.entries(tally).filter(([,g])=>g[g.length-1]==='great').map(([l])=>l);
-    return `Consistently strong questions: ${great.join(', ')||'building the streak now'}. The heatmap below shows every question across every project — filter it to explore.${sample}`;
+    return `Consistently strong questions: ${great.join(', ')||'building the streak now'}. The heatmap below shows every question across every project. Filter it to explore.${sample}`;
   }
-  return `Happy to help — I can walk you through any project (${P.map(p=>p.title).join(', ')}), any pillar, the trend, or how the scoring works. Everything I say is backed by the public repos on <a href="https://github.com/nikjain15" style="text-decoration:underline">GitHub</a>.`;
+  return `Happy to help. I can walk you through any project (${P.map(p=>p.title).join(', ')}), any pillar, the trend, or how the scoring works. Everything I say is backed by the public repos on <a href="https://github.com/nikjain15" style="text-decoration:underline">GitHub</a>.`;
 }
 function wireAsk(){
   const inp=document.getElementById('askIn'), out=document.getElementById('askOut');
