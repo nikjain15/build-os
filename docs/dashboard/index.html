@@ -84,6 +84,26 @@
   .art.no { color:var(--bad); border-color:color-mix(in srgb, var(--bad) 35%, transparent); }
   .note { font-size:13px; color:var(--muted); margin-top:10px; border-top:1px dashed var(--line); padding-top:9px; }
   .legend { font-size:12px; color:var(--faint); margin-top:12px; } .legend span { margin-right:14px; }
+  .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .search { appearance:none; border:1px solid var(--line-2); background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:14px; padding:8px 12px; border-radius:8px; min-width:220px; }
+  .search::placeholder { color:var(--faint); }
+  .search:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-color:var(--accent); }
+  .ask { margin-top:26px; border:1px solid var(--line); border-radius:11px; padding:18px 20px; background:var(--panel); }
+  .ask .lbl { font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--accent); text-transform:uppercase; }
+  .ask-row { margin-top:10px; display:flex; gap:10px; }
+  .ask-row input { flex:1; min-width:0; }
+  .ask-btn { border:0; background:var(--accent); color:#fff; font-family:var(--sans); font-weight:700;
+    font-size:14px; padding:9px 18px; border-radius:8px; cursor:pointer; }
+  .ask-btn:hover { background:var(--accent-ink); }
+  .ask-btn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .chips { margin-top:10px; display:flex; flex-wrap:wrap; gap:7px; }
+  .chip { border:1px solid var(--line-2); background:transparent; color:var(--muted); font-family:var(--sans);
+    font-size:12.5px; padding:4px 11px; border-radius:99px; cursor:pointer; }
+  .chip:hover { border-color:var(--accent); color:var(--accent); }
+  #askOut { margin-top:12px; font-size:15px; line-height:1.6; display:none; border-top:1px dashed var(--line); padding-top:12px; }
+  #askOut b { color:var(--accent-ink); }
+  .empty-note { font-size:14px; color:var(--faint); padding:8px 0; }
 </style>
 </head>
 <body>
@@ -103,14 +123,28 @@
     <p class="sub">How I'm doing across the nine craft pillars, project by project — powered by each repo's <span style="font-family:var(--mono);font-size:14px">scorecard.json</span>, scored against written rubrics, never eyeballed.</p>
     <div id="banner" class="banner"></div>
   </header>
+  <div class="ask">
+    <div class="lbl">Ask the dashboard</div>
+    <div class="ask-row">
+      <input class="search" id="askIn" type="text" placeholder="e.g. What's the weakest pillar? How is Safety trending?" aria-label="Ask a question about the dashboard">
+      <button class="ask-btn" id="askGo">Ask</button>
+    </div>
+    <div class="chips" id="askChips"></div>
+    <div id="askOut" aria-live="polite"></div>
+  </div>
   <div id="focus" class="focus"></div>
   <div class="kpis" id="kpis"></div>
   <div class="grid">
     <div class="card"><h2>Current craft level</h2><div class="h-sub">Latest project across all pillars</div><canvas id="radar" height="260"></canvas></div>
     <div class="card"><h2>Improvement over time</h2><div class="h-sub">Overall score across projects — am I compounding?</div><canvas id="trend" height="260"></canvas></div>
-    <div class="card full"><h2>Projects</h2><div class="h-sub">Per-project scorecards — grade, pillars, artifacts, next focus</div><div class="pcards" id="pcards"></div></div>
-    <div class="card full"><h2>Question heatmap</h2><div class="h-sub">Every question, every project — where I keep winning or slipping</div>
-      <div style="overflow:auto"><table id="heat"></table></div>
+    <div class="card full">
+      <div class="card-head"><div><h2>Projects</h2><div class="h-sub">Per-project scorecards — grade, pillars, artifacts, next focus</div></div>
+        <input class="search" id="pSearch" type="search" placeholder="Filter projects — name, type, pillar…" aria-label="Filter projects"></div>
+      <div class="pcards" id="pcards"></div><div class="empty-note" id="pEmpty" style="display:none">No projects match that filter.</div></div>
+    <div class="card full">
+      <div class="card-head"><div><h2>Question heatmap</h2><div class="h-sub">Every question, every project — where I keep winning or slipping</div></div>
+        <input class="search" id="hSearch" type="search" placeholder="Filter questions — label, id, or weak/good/great…" aria-label="Filter heatmap questions"></div>
+      <div style="overflow:auto"><table id="heat"></table></div><div class="empty-note" id="hEmpty" style="display:none">No questions match that filter.</div>
       <div class="legend"><span><i class="cell g-great"></i> great</span><span><i class="cell g-good"></i> good</span><span><i class="cell g-weak"></i> weak</span><span><i class="cell g-na"></i> not asked</span></div>
     </div>
   </div>
@@ -186,24 +220,108 @@ function render(data){
   new Chart(document.getElementById('trend'),{type:'line',
     data:{labels:P.map(p=>p.title),datasets:ds},
     options:{plugins:{legend:{labels:{color:faint,boxWidth:10,font:{size:10}}}},scales:{y:{min:0,max:10,ticks:{color:faint},grid:{color:line}},x:{ticks:{color:faint,font:{size:10}},grid:{color:line}}}}});
-  // Project cards
+  // Project cards (data-q carries searchable text for the filter)
   document.getElementById('pcards').innerHTML=P.slice().reverse().map(p=>{
     const arts=Object.entries(p.artifacts).map(([k,v])=>`<span class="art ${v?'ok':'no'}">${v?'✓':'✗'} ${k.replace('.md','')}</span>`).join('');
     const pills=PILLARS.map(k=>`<div class="pill"><span>${k}</span><span class="num">${p.pillars[k]==null?'—':p.pillars[k]+'/10'}</span></div>`).join('');
-    return `<div class="pcard"><div class="top"><span class="name">${p.title}</span><span class="score">${p.overall}<span class="u">/100</span></span></div>
+    const hay=[p.title,p.project,p.type,p.weakest_pillar,p.next_focus].join(' ').toLowerCase();
+    return `<div class="pcard" data-q="${hay.replace(/"/g,'')}"><div class="top"><span class="name">${p.title}</span><span class="score">${p.overall}<span class="u">/100</span></span></div>
       <div class="bar"><i style="width:${p.overall}%"></i></div>
       <div class="meta">${p.date} · ${p.type}</div>
       ${pills}<div class="arts">${arts}</div>
       ${p.next_focus?`<div class="note">Next: ${p.next_focus}</div>`:''}</div>`;}).join('');
-  // Heatmap
+  // Heatmap (data-q carries label + id + grades for the filter)
   const labels={}; P.forEach(p=>(p.questions||[]).forEach(q=>{labels[q.id]=q.label||q.id;}));
   let h=`<tr><th>Question</th>${P.map(p=>`<th title="${p.title}">${p.title.length>14?p.title.slice(0,13)+'…':p.title}</th>`).join('')}</tr>`;
-  Object.keys(labels).forEach(q=>{h+=`<tr><td>${labels[q]}</td>`+P.map(p=>{
+  Object.keys(labels).forEach(q=>{
+    const grades=P.map(p=>{const f=(p.questions||[]).find(x=>x.id===q);return f?f.grade:'';}).join(' ');
+    h+=`<tr data-q="${(labels[q]+' '+q+' '+grades).toLowerCase()}"><td>${labels[q]}</td>`+P.map(p=>{
     const f=(p.questions||[]).find(x=>x.id===q);const cls=f?('g-'+f.grade):'g-na';
     return `<td><span class="cell ${cls}" title="${f?f.grade:'not asked'}"></span></td>`;}).join('')+`</tr>`;});
   document.getElementById('heat').innerHTML=h;
 }
-load().then(render);
+
+// ---------- Filters ----------
+function wireFilter(inputId, selector, emptyId){
+  const el=document.getElementById(inputId);
+  el.addEventListener('input',()=>{
+    const t=el.value.trim().toLowerCase(); let shown=0;
+    document.querySelectorAll(selector).forEach(n=>{
+      const hit=!t||(n.dataset.q||'').includes(t);
+      n.style.display=hit?'':'none'; if(hit)shown++;
+    });
+    document.getElementById(emptyId).style.display=shown?'none':'block';
+  });
+}
+
+// ---------- Ask the dashboard (answers computed live from the loaded data) ----------
+let DATA=null;
+const fmtP=p=>`<b>${p}</b>`;
+function pillarStats(P){
+  const out={};
+  PILLARS.forEach(k=>{
+    const series=P.map(p=>p.pillars[k]).filter(v=>v!=null);
+    if(series.length)out[k]={latest:series[series.length-1],first:series[0],avg:+(series.reduce((a,b)=>a+b,0)/series.length).toFixed(1)};
+  });
+  return out;
+}
+function answer(qRaw){
+  const q=qRaw.toLowerCase();
+  if(!DATA||!DATA.projects.length)return "No data loaded yet.";
+  const P=DATA.projects.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const latest=P[P.length-1], stats=pillarStats(P);
+  const sample=DATA===SAMPLE?" (Note: this is sample data — no real projects scored yet.)":"";
+  if(/real|fake|sample|demo/.test(q))
+    return DATA===SAMPLE?"This is <b>sample (demo) data</b> — no real project scorecards are published yet. Real scores replace it automatically after each Build OS run.":"This is <b>real data</b> from scored Build OS projects.";
+  if(/what is|how does (this|it) work|explain/.test(q))
+    return `Build OS is Nik's product development strategy as running code: every project is graded against nine craft pillars, producing thirteen artifacts and a scorecard. What breaks becomes a new question, so the bar compounds.${sample}`;
+  if(/nine pillars|which pillars|list.*pillars|pillars\?/.test(q))
+    return `The nine pillars: ${PILLARS.map(fmtP).join(' · ')}.`;
+  if(/weak|worst|focus/.test(q))
+    return `Weakest pillar right now: ${fmtP(latest.weakest_pillar)} (from ${latest.title}). Next focus: ${latest.next_focus||'—'}${sample}`;
+  if(/strong|best pillar|top pillar/.test(q)){
+    const best=Object.entries(stats).sort((a,b)=>b[1].latest-a[1].latest)[0];
+    return `Strongest pillar: ${fmtP(best[0])} at <b>${best[1].latest}/10</b> on the latest project.${sample}`;
+  }
+  for(const k of PILLARS){ if(q.includes(k.toLowerCase())||q.includes(k.toLowerCase().split(' ')[0])){
+    const s=stats[k]; if(!s)return `${fmtP(k)} has no graded questions yet — shown as a visible gap, never a guessed number.`;
+    return `${fmtP(k)}: <b>${s.latest}/10</b> latest, ${s.first}→${s.latest} across projects (avg ${s.avg}).${sample}`;}}
+  if(/trend|improv|compound|progress|better|over time/.test(q)){
+    const d=latest.overall-P[0].overall;
+    const per=Object.entries(stats).map(([k,s])=>`${k} ${s.first}→${s.latest}`).join(' · ');
+    return `Overall moved <b>${P[0].overall} → ${latest.overall}</b> (${d>=0?'+':''}${d}) across ${P.length} project${P.length>1?'s':''}. Per pillar: ${per}.${sample}`;
+  }
+  for(const p of P){ if(q.includes(p.title.toLowerCase())||q.includes(p.project.toLowerCase())){
+    const miss=Object.entries(p.artifacts).filter(([,v])=>!v).map(([k])=>k);
+    return `${fmtP(p.title)} (${p.date}, ${p.type}): <b>${p.overall}/100</b>. Weakest: ${p.weakest_pillar}. ${miss.length?`Missing artifacts: ${miss.join(', ')}.`:'All artifacts present.'} Next: ${p.next_focus||'—'}${sample}`;}}
+  if(/score|overall|latest|current level|how (am|is)/.test(q))
+    return `Latest overall: <b>${latest.overall}/100</b> (${latest.title}). ${P.length} project${P.length>1?'s':''} tracked; weakest pillar ${fmtP(latest.weakest_pillar)}.${sample}`;
+  if(/how many|count|projects/.test(q))
+    return `<b>${P.length}</b> project${P.length>1?'s':''} tracked: ${P.map(p=>`${p.title} (${p.overall})`).join(' · ')}.${sample}`;
+  if(/question|heatmap|slipping|winning/.test(q)){
+    const tally={};
+    P.forEach(p=>(p.questions||[]).forEach(x=>{(tally[x.label]=tally[x.label]||[]).push(x.grade);}));
+    const weak=Object.entries(tally).filter(([,g])=>g[g.length-1]==='weak').map(([l])=>l);
+    const great=Object.entries(tally).filter(([,g])=>g[g.length-1]==='great').map(([l])=>l);
+    return `Latest project — graded <b>great</b>: ${great.join(', ')||'none'}. Still <b>weak</b>: ${weak.join(', ')||'none'}.${sample}`;
+  }
+  return `I answer from the scorecard data: try "weakest pillar", "how is Safety trending", "tell me about ${latest.title}", or "is this data real". For everything else, the full system is on <a href="https://github.com/nikjain15/build-os" style="text-decoration:underline">GitHub</a>.`;
+}
+function wireAsk(){
+  const inp=document.getElementById('askIn'), out=document.getElementById('askOut');
+  const go=()=>{ if(!inp.value.trim())return; out.innerHTML=answer(inp.value); out.style.display='block'; };
+  document.getElementById('askGo').addEventListener('click',go);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter')go(); });
+  const chips=["Weakest pillar?","Am I improving?","Is this data real?","What is Build OS?"];
+  document.getElementById('askChips').innerHTML=chips.map(c=>`<button class="chip">${c}</button>`).join('');
+  document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ inp.value=b.textContent; go(); }));
+}
+
+load().then(d=>{ DATA=d; render(d);
+  wireFilter('pSearch','#pcards .pcard','pEmpty');
+  wireFilter('hSearch','#heat tr[data-q]','hEmpty');
+  wireAsk();
+});
 </script>
 </body>
 </html>
