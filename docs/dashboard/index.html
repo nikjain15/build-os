@@ -122,7 +122,8 @@
     box-shadow:0 8px 24px rgba(0,0,0,.35); }
   .info::before { content:""; position:absolute; left:50%; bottom:calc(100% + 3px); transform:translateX(-50%);
     border:6px solid transparent; border-top-color:var(--ink); opacity:0; transition:opacity .15s; }
-  .info:hover::after, .info:focus-visible::after, .info:hover::before, .info:focus-visible::before { opacity:1; }
+  .info:hover::after, .info:focus-visible::after, .info.open::after,
+  .info:hover::before, .info:focus-visible::before, .info.open::before { opacity:1; }
   .card:first-child .info::after, .ask .info::after { bottom:auto; top:calc(100% + 9px); }
   .card:first-child .info::before, .ask .info::before { bottom:auto; top:calc(100% + 3px); border-top-color:transparent; border-bottom-color:var(--ink); }
 </style>
@@ -145,9 +146,10 @@
     <div id="banner" class="banner"></div>
   </header>
   <div class="ask">
-    <div class="lbl">Ask the dashboard<button class="info" data-tip="Type a question about the data, or tap a suggestion chip. Answers are computed instantly from the live scorecards, right in your browser. Your thread is remembered only on your own device.">i</button></div>
+    <div class="lbl">Ask Build OS<button class="info" data-tip="Type a question, or tap a suggestion. Answers are computed instantly from the live scorecards, right in your browser. Your conversation is remembered only on your own device.">i</button></div>
+    <div id="askHello" style="margin-top:10px;font-size:15px;color:var(--muted)">Hi, I'm Build OS, the system that scores every product Nik ships. Ask me anything about his work; everything I say is backed by the public repos.</div>
     <div class="ask-row">
-      <input class="search" id="askIn" type="text" placeholder="e.g. How's the trend? Tell me about RoleOS. What are the standout pillars?" aria-label="Ask a question about the dashboard">
+      <input class="search" id="askIn" type="text" placeholder="Ask me anything about Nik's work…" aria-label="Ask Build OS a question">
       <button class="ask-btn" id="askGo">Ask</button>
     </div>
     <div class="chips" id="askChips"></div>
@@ -332,9 +334,11 @@ function answer(qRaw){
   if(pillar)MEM.lastPillar=pillar; if(project)MEM.lastProject=project.title; remember();
 
   if(/real|fake|sample|demo/.test(q))
-    return DATA===SAMPLE?"Right now you're seeing <b>sample data</b>. Real scorecards land automatically after each Build OS run.":"This is <b>real data</b>: each score comes from a Build OS gap audit of the public repo: artifacts, tests, evals and CI actually present in the file tree. Every claim here is checkable on GitHub.";
-  if(/what is|how does (this|it) work|explain|methodology|how.*scored/.test(q))
-    return `Build OS is Nik's product development strategy as running code. Every project is audited against nine craft pillars, from product judgment to safety to economics, with grades tied to evidence in the repo, and the arithmetic shown. What each build teaches becomes a new question for the next one, so the bar compounds.${sample}`;
+    return DATA===SAMPLE?"Right now you're seeing <b>sample data</b>. Real scorecards land automatically after each Build OS run.":"Good question to ask, and yes: this is <b>real data</b>. Each score comes from an audit of the public repo itself: the artifacts, tests, evals and CI actually present in the file tree. Anything I tell you, you can verify on Nik's GitHub.";
+  if(/scoring|how.*scored|how.*grade|methodology|rubric/.test(q))
+    return `Every answer is graded weak, good or great against a written rubric, with evidence quoted from the repo. Grades roll up into nine pillar scores (0 to 10), and the overall is the computed mean, never eyeballed. A pillar with no evidence stays empty rather than being guessed.${sample}`;
+  if(/what is|who are you|how does (this|it) work|explain/.test(q))
+    return `I'm Build OS: Nik's 12 years of product experience, written down as a system that runs every build. I interview, I audit the repo, I grade against nine craft pillars, and what each project teaches becomes a harder question for the next one. This dashboard is my public scorecard of his work.${sample}`;
   if(/nine pillars|which pillars|what pillars|list.*pillars/.test(q))
     return `The nine pillars: ${PILLARS.map(fmtP).join(' · ')}. Each one is proven by artifacts and graded questions, never vibes.`;
   if(project&&pillar){
@@ -346,7 +350,7 @@ function answer(qRaw){
     return s?pillarLine(pillar,s,sample):`${fmtP(pillar)} hasn't been graded yet. Shown as an open gap, never a guessed number.`;}
   if(/strong|best|top|standout|stand out|good at|excel|highlight/.test(q)){
     const top=Object.entries(stats).sort((a,b)=>b[1].latest-a[1].latest).slice(0,3);
-    return `Standout pillars right now: ${top.map(([k,s])=>`${fmtP(k)} (${s.latest}/10)`).join(', ')}.${sample}`;
+    return `Nik's standout pillars right now: ${top.map(([k,s])=>`${fmtP(k)} (${s.latest}/10)`).join(', ')}. Across all five products, testing with CI gates is green on every single one.${sample}`;
   }
   if(/sharpen|focus|next|working on|improv|weak|growth/.test(q))
     return `The system always names one thing to sharpen next. Right now that's ${fmtP(latest.weakest_pillar)}: ${latest.next_focus||''} That's the loop working, not a gap being hidden.${sample}`;
@@ -366,22 +370,38 @@ function answer(qRaw){
   }
   return `Happy to help. I can walk you through any project (${P.map(p=>p.title).join(', ')}), any pillar, the trend, or how the scoring works. Everything I say is backed by the public repos on <a href="https://github.com/nikjain15" style="text-decoration:underline">GitHub</a>.`;
 }
+function followUps(){
+  const pool=["What is Nik strongest at?","How's the trend?","Tell me about RoleOS","Tell me about Conduit","How does the scoring work?","Is this data real?","What's being sharpened next?"];
+  const asked=new Set(MEM.history.map(m=>m.q));
+  return pool.filter(c=>!asked.has(c)).slice(0,3);
+}
 function wireAsk(){
   const inp=document.getElementById('askIn'), out=document.getElementById('askOut');
+  const hello=document.getElementById('askHello');
+  const paintChips=()=>{
+    const chips=MEM.history.length?followUps():["What is Nik strongest at?","Tell me about RoleOS","How does the scoring work?","Is this data real?"];
+    document.getElementById('askChips').innerHTML=chips.map(c=>`<button class="chip">${c}</button>`).join('');
+    document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ inp.value=b.textContent; go(); }));
+  };
   const paint=()=>{ out.innerHTML=MEM.history.map(m=>`<div class="msg"><div class="q">${m.q}</div><div class="a">${m.a}</div></div>`).join('');
-    out.style.display=MEM.history.length?'block':'none'; out.scrollTop=out.scrollHeight; };
+    out.style.display=MEM.history.length?'block':'none';
+    hello.style.display=MEM.history.length?'none':'block';
+    out.scrollTop=out.scrollHeight; paintChips(); };
   const go=()=>{ const t=inp.value.trim(); if(!t)return;
     MEM.history.push({q:t.replace(/</g,'&lt;'),a:answer(t)}); if(MEM.history.length>20)MEM.history.shift();
     remember(); paint(); inp.value=''; };
   document.getElementById('askGo').addEventListener('click',go);
   inp.addEventListener('keydown',e=>{ if(e.key==='Enter')go(); });
-  const chips=["What is Build OS?","What are the standout pillars?","How's the trend?","Is this data real?"];
-  document.getElementById('askChips').innerHTML=chips.map(c=>`<button class="chip">${c}</button>`).join('');
-  document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ inp.value=b.textContent; go(); }));
   paint();
 }
 
 let SNAPSHOT='';
+// Tooltips: also open on click/tap (mobile has no hover); tap elsewhere closes.
+document.addEventListener('click',e=>{
+  document.querySelectorAll('.info.open').forEach(i=>{ if(i!==e.target) i.classList.remove('open'); });
+  if(e.target.classList&&e.target.classList.contains('info')) e.target.classList.toggle('open');
+});
+
 load().then(d=>{ DATA=d; SNAPSHOT=JSON.stringify(d); render(d);
   if(d!==SAMPLE&&d.updated){const s=document.querySelector('header.page .sub');
     s.innerHTML+=` <span style="color:var(--accent);font-size:14px">● live</span> <span style="font-size:14px">data as of ${d.updated}</span>`;}
