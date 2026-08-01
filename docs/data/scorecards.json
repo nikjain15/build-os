@@ -133,7 +133,7 @@
       ],
       "notes": "Scored via Build OS gap audit of the public repo (file tree: artifacts, tests, evals, CI) \u2014 grades from evidence, not self-report. 171 test files, 20 CI workflows (e2e, regression, soak, db), PRD+architecture docs, multi-model routing grounded in the ledger. Pillar math: Product Judgment=8.0, System Design=7.7, Evaluation=7.0, Reliability & Ownership=8.0, Safety=7.0, Economics=7.0, Communication=9.0, UX/UI & Interaction=7.0; overall=round(mean x10)=76. Pillars with no evidence either way are null \u2014 a visible gap, never a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Promote the regression + soak suites into a labeled golden set with a validated judge.",
+      "next_focus": "Next for FounderFirst: promote 30 real transactions from the regression suite into a labeled golden set, and validate the judge against those labels \u2014 the CI gates to enforce it already exist.",
       "loop_ran": false,
       "projects_since_resource_refresh": 1
     },
@@ -267,7 +267,7 @@
       ],
       "notes": "Scored via Build OS gap audit of the public repo (file tree: artifacts, tests, evals, CI) \u2014 grades from evidence, not self-report. 132 test files, security audit + secret-rotation runbooks, reliability-as-code: the dangerous tool doesn't exist, guaranteed by invariant tests. Pillar math: Product Judgment=8.0, System Design=7.7, Evaluation=7.0, Reliability & Ownership=9.0, Safety=9.0, Economics=7.0, Communication=9.0, UX/UI & Interaction=7.0; overall=round(mean x10)=80. Pillars with no evidence either way are null \u2014 a visible gap, never a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Add judge-vs-human validation on top of EVALS.md; the no-'send'-tool invariant suite is the pattern to extend.",
+      "next_focus": "Next for RoleOS: validate the eval judge against ~50 human-labeled scoring decisions and report agreement \u2014 the same invariant-test rigor that guards the tools, applied to the grader.",
       "loop_ran": false,
       "projects_since_resource_refresh": 2
     },
@@ -392,7 +392,7 @@
       ],
       "notes": "Scored via Build OS gap audit of the public repo (file tree: artifacts, tests, evals, CI) \u2014 grades from evidence, not self-report. Labeled groundedness + guard eval datasets with metric runners, server-side prompt-injection defense, e2e suite, design spec + screenshots. Pillar math: Product Judgment=8.0, System Design=7.0, Evaluation=8.0, Reliability & Ownership=8.0, Safety=8.0, Economics=7.0, Communication=9.0, UX/UI & Interaction=7.0; overall=round(mean x10)=78. Pillars with no evidence either way are null \u2014 a visible gap, never a guess.",
       "weakest_pillar": "System Design",
-      "next_focus": "Write the ADRs for the server-side AI + identity-caching design that delivers the 10-20x cost edge.",
+      "next_focus": "Next for Pulse: write ADR-0001 for the server-side AI boundary and ADR-0002 for identity-based caching \u2014 the design behind the 10-20x cost edge, made reviewable.",
       "loop_ran": false,
       "projects_since_resource_refresh": 3
     },
@@ -507,7 +507,7 @@
       ],
       "notes": "Scored via Build OS gap audit of the public repo (file tree: artifacts, tests, evals, CI) \u2014 grades from evidence, not self-report. Labeled recognition dataset (jsonl), integration + realtime e2e tests, PRD/architecture/evals docs on a realtime comms platform. Pillar math: Product Judgment=7.0, System Design=7.0, Evaluation=8.0, Reliability & Ownership=8.0, Safety=7.0, Communication=7.0, UX/UI & Interaction=7.0; overall=round(mean x10)=73. Pillars with no evidence either way are null \u2014 a visible gap, never a guess.",
       "weakest_pillar": "System Design",
-      "next_focus": "ADR the realtime architecture and add a cost ledger \u2014 the labeled recognition dataset is ahead of the pack.",
+      "next_focus": "Next for Rally: an ADR for the realtime architecture plus a one-page cost ledger per active cohort \u2014 the labeled recognition dataset already leads the portfolio.",
       "loop_ran": false,
       "projects_since_resource_refresh": 4
     },
@@ -631,7 +631,7 @@
       ],
       "notes": "Scored via Build OS gap audit of the public repo (file tree: artifacts, tests, evals, CI) \u2014 grades from evidence, not self-report. A 10-package platform: evals as a package (runner, metrics, methods, judge validation in judgeCheck.test), guardrails engine, gateway, MCP registry, cost as a first-class console surface. Pillar math: Product Judgment=7.0, System Design=8.3, Evaluation=9.0, Reliability & Ownership=8.0, Safety=7.0, Economics=9.0, Communication=7.0; overall=round(mean x10)=79. Pillars with no evidence either way are null \u2014 a visible gap, never a guess.",
       "weakest_pillar": "Communication",
-      "next_focus": "Split the strong README into PRD + ARCHITECTURE docs so the platform thinking is as visible as the code.",
+      "next_focus": "Next for Conduit: add docs/PRD.md + docs/ARCHITECTURE.md with the request path and the routing/caching ADRs \u2014 the platform's thinking deserves the same visibility as its 10 packages of code.",
       "loop_ran": false,
       "projects_since_resource_refresh": 5
     }
