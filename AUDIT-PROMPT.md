@@ -1,12 +1,13 @@
-# Build OS — Adversarial + Regression Audit Prompt (canonical, for v1.2)
+# Build OS — Adversarial + Regression Audit Prompt (canonical, version-agnostic)
 
-**This file supersedes any earlier audit prompt.** It is aligned to Build OS **v1.2**: nine craft
-pillars, plain-English questions with `🤔` fallbacks, the stakeholder-simulation mode, and the
-scorecard/dashboard. If you kept an older 7-pillar audit prompt, delete it — run only this one so the
-two never disagree.
+**This file supersedes any earlier audit prompt.** It audits **whatever SKILL.md version is attached**
+— the panel must read the attached file's own `## Changelog` and test THAT version's claims, not the
+version this prompt was last edited against. **First check:** if the attached SKILL.md's changelog
+lists changes this prompt doesn't cover (new packs, new rules), the panel must still audit them —
+and file a P2 to update this prompt.
 
 Paste this into a **fresh Claude session** (or a new Cowork task), attach the current `SKILL.md`
-(and, for the lockstep test, `data/scorecards.json`, `data/scorecard.template.json`, and
+(and, for the lockstep test, `docs/data/scorecards.json`, `docs/data/scorecard.template.json`, and
 `docs/index.html`). Run it before publishing or after any edit. A polished OS should survive the panel
 with **zero P0/P1 findings and every phase ≥8/10.**
 
@@ -17,8 +18,8 @@ with **zero P0/P1 findings and every phase ≥8/10.**
 ---
 
 You are convening an **adversarial + regression review panel** to stress-test the **Build OS** — a
-self-improving operating system (v1.2) that interviews a builder phase-by-phase in plain English while
-they build an AI product, writes engineering/product artifacts into their GitHub repo, and scores the
+self-improving operating system (version per the attached changelog) that interviews a builder
+phase-by-phase in plain English while they build a product (AI or non-AI), writes engineering/product artifacts into their GitHub repo, and scores the
 work against **nine craft pillars**: Product Judgment, System Design, Evaluation, Reliability &
 Ownership, Safety, Economics, Communication, UX/UI & Interaction, Collaboration & Stakeholders. It also
 has a **stakeholder-simulation mode** (role-play a designer, staff engineer, security/legal, data lead,
@@ -48,8 +49,9 @@ their own voice. Disagree with each other where you'd genuinely differ.
    alone, without googling? Flag every question where the answer is still "no."
 
 ### Step 2 — Attack each phase, type pack, and simulation
-For EVERY phase (Discovery, Design, Build, Eval, Ship, Retro), EVERY Type Pack (RAG, agent, fine-tune,
-API), and EVERY stakeholder simulation, apply these tests and quote the exact line:
+For EVERY phase (Discovery, Design, Build, Eval, Ship, Retro), EVERY Type Pack listed in the attached
+SKILL.md (currently RAG, agent, fine-tune, API, non-AI — trust the file, not this list), and EVERY
+stakeholder simulation, apply these tests and quote the exact line:
 
 - **Discrimination:** could a shallow builder give a "great" answer by copying the example without
   understanding? If yes, the question is weak — rewrite it.
@@ -79,6 +81,14 @@ API), and EVERY stakeholder simulation, apply these tests and quote the exact li
    matrix (§10), and `docs/index.html`'s `PILLARS` array. Confirm the scorecard schema fields and
    question `id`s match what the dashboard reads. Any mismatch silently drops data from the charts —
    report it as **P0** with the exact divergence.
+5. **Deployment reality test (P0 if broken).** Trace the dashboard's data path end-to-end AS DEPLOYED:
+   `index.html`'s fetch URL, resolved relative to where GitHub Pages actually serves the page, must
+   land on the real scorecards file — remember Pages serving from `/docs` publishes ONLY `/docs`.
+   Also verify README's setup steps and the SKILL's file paths (§11, §12) all point at files that
+   exist in the repo. An audit that only reads prose misses exactly this class of bug.
+6. **Version-lockstep of the toolchain itself.** This prompt, the SKILL version, and the README must
+   not contradict each other (stale version numbers, stale paths, stale artifact counts). Any
+   contradiction is at least P1.
 
 ### Step 3 — Score and prioritize
 - Score each of the 6 phases, 4 type packs, and the simulation mode **/10** with a one-line reason.
@@ -128,8 +138,8 @@ audit. Do the following:
    9-spoke current-level radar, improvement-over-time trend, per-project scorecards, and a question
    heatmap whose rows derive from the scorecard `label`s. Keep it one self-contained file that reads
    `./data/scorecards.json` with an embedded sample-data fallback so it renders locally and on Pages.
-4. **Update `/data/scorecard.template.json`** and the README scoring convention to match nine pillars.
-5. **Re-aggregate `/data/scorecards.json`** from all existing project scorecards.
+4. **Update `/docs/data/scorecard.template.json`** and the README scoring convention to match nine pillars.
+5. **Re-aggregate `/docs/data/scorecards.json`** from all existing project scorecards.
 6. Output: the updated files + a one-paragraph note on exactly what changed and why, plus the Pages URL
    to expect once pushed.
 

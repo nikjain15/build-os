@@ -1,7 +1,7 @@
 ---
 name: build-os
 description: >
-  A self-improving, build-time operating system for shipping production AI products with
+  A self-improving, build-time operating system for shipping production products — AI and non-AI — with
   senior-level rigor. When the builder starts a new GitHub project, works on an existing repo, or
   audits a build, it interviews them phase-by-phase in plain English (with a simpler re-phrasing
   whenever they're stuck), grades their answers (weak/good/great), and writes the resulting artifacts
@@ -9,10 +9,10 @@ description: >
   into the repo. It measures nine craft pillars, can role-play senior stakeholders to pressure-test
   the product, and improves its own question bank after every project. Use when the user says
   "run build os", "build OS", "run my build OS", "run build os on this repo", or when
-  starting/auditing any AI product.
+  starting/auditing any product.
 ---
 
-# ⚙️ Build OS — a self-improving system for shipping excellent AI products (v1.3)
+# ⚙️ Build OS — a self-improving system for shipping excellent products (v1.4)
 
 **The headline idea:** this is a *self-improving loop* (§11). Every project it interviews me, writes
 the artifacts, and harvests what broke into new questions — so the OS gets sharper each build and the
@@ -41,13 +41,15 @@ dimension each artifact demonstrates.
 
 ## 0. How to run this (read fully before starting)
 
-**Step 1 — Detect the situation.** Ask me: *"New project or existing repo?"* and *"What type of AI
-product — RAG/search, agent, fine-tune, API/dev-tool, or a mix?"*
+**Step 1 — Detect the situation.** Ask me: *"New project or existing repo?"* and *"What type of
+product — RAG/search, agent, fine-tune, API/dev-tool, non-AI app/site, or a mix?"*
 - **New** → run all six phases in order from Discovery.
 - **Existing** → read the repo first, produce a **Gap Audit** (table: each artifact → exists / missing /
   weak, one-line reason), then backfill in priority order:
   Evals → Failure Modes → PRD → Architecture → UX → Safety → Engineering → Cost → Stakeholders → Decision Log → README → Retro.
 - Product type activates the matching **Type Pack** (§8), whose questions fire *in addition to* the core.
+- **Non-AI product** → run the core with the §8E swap table (AI-specific questions get their non-AI
+  analog; nothing is silently skipped) plus the §8E pack.
 
 **Step 2 — Interview me in plain English, one question at a time.** Ask the question in everyday words,
 wait for my answer, grade it out loud (weak/good/great), and tell me the single change that would move
@@ -75,8 +77,9 @@ specific project**. Always keep the precise term in parentheses so I learn the v
 once, name the exact craft pillar I'd fail to demonstrate, then respect my final call but log the skip
 in `docs/DECISION_LOG.md`.
 
-**Step 5 — Write artifacts as we go.** After each phase, create/update the real files in the repo, show
-me the draft, refine before moving on. Never let artifacts drift from my answers.
+**Step 5 — Write artifacts as we go.** After each phase, create/update the real files in the repo —
+starting from the skeletons in the hub's `templates/` folder so every project's artifacts share the
+same structure — show me the draft, refine before moving on. Never let artifacts drift from my answers.
 
 **Step 6 — Offer a stakeholder simulation at the right moments (§9).** At the end of the matching phase,
 offer to role-play a senior stakeholder (designer, staff engineer, security/legal, data, GTM) who tears
@@ -169,6 +172,13 @@ The `📝` example is a **post-answer** reference — never show it before my fi
   - 📝 Example: "Working: replies sent without edits that resolve the ticket. Warning: rate of factually wrong promises."
   - 💡 Why it matters: balancing value against harm is exactly what safety-minded teams probe. (Anthropic; Exponent)
   - 📄 Creates: `docs/PRD.md` §Metrics.
+
+- [A · D8] `[Product Judgment][Reliability & Ownership]` **For each number you promised to watch (D7), where does the data actually come from — is the event being recorded from day one?**
+  - 🤔 Not sure what I mean? → A metric you can't measure is a wish. If "replies sent without edits" is your success number, is there code that records every send and every edit, before launch?
+  - Weak: "I'll check the logs somehow." · Good: key events tracked, but named ad-hoc and added after launch. · Great: a small written event list (name, when it fires, properties) instrumented BEFORE launch, so day-one data exists and the kill criteria (R1) can actually be checked.
+  - 📝 Example: "Three events: draft_created, draft_edited (with edit-distance), draft_sent. Defined in PRD §Metrics, firing in staging a week before launch — R1's kill line reads straight off them."
+  - 💡 Why it matters: teams routinely set metrics they never instrumented — the kill decision then gets made on vibes. (Lenny's/Amplitude playbooks)
+  - 📄 Creates: `docs/PRD.md` §Instrumentation.
 
 ---
 
@@ -382,6 +392,13 @@ The `📝` example is a **post-answer** reference — never show it before my fi
   - 💡 Why it matters: full-trace observability is a PII liability unless retention and redaction are designed in — and in most markets that's law, not preference. (GDPR/CCPA; OWASP LLM02 sensitive-information disclosure)
   - 📄 Creates: `docs/SAFETY.md` §Data handling.
 
+- [C · SH10] `[Safety][Reliability & Ownership]` **Beyond the AI: who can log in, where do your secret keys live, and would you know if a library you depend on had a known vulnerability?**
+  - 🤔 Not sure what I mean? → Three boring-but-fatal basics: can strangers reach things they shouldn't (auth)? Are passwords/API keys sitting in your code (secrets)? And are you running someone else's code with a published security hole (dependencies)?
+  - Weak: "it's just a demo, no auth; keys are in the code." · Good: auth on private routes, keys in env vars, dependencies updated occasionally. · Great: authn AND authz checked per route, secrets in a manager (never in git — verified with a scan), automated dependency alerts (e.g. Dependabot/`npm audit` in CI), and the classic web risks (OWASP Top 10, not just the LLM list) considered in SAFETY.md.
+  - 📝 Example: "Supabase auth with row-level security; keys in the platform's secret store, a gitleaks scan in CI confirms none in history; Dependabot auto-PRs patches weekly."
+  - 💡 Why it matters: a product can ace every AI-safety question and still be breached through a leaked key or an unpatched library — classic security is the floor under everything else. (OWASP Top 10)
+  - 📄 Creates: `docs/SAFETY.md` §Security basics.
+
 ---
 
 ## 7. Phase 6 — Retro (learn, decide, reuse)
@@ -531,6 +548,51 @@ The `📝` example is a **post-answer** reference — never show it before my fi
   - 💡 Why it matters: LLM-backed endpoints turn rate-limit gaps into unbounded cost exposure. (OWASP LLM10 unbounded consumption)
   - 📄 Creates: `docs/SAFETY.md` §Abuse limits, `docs/COST.md` §Spend caps.
 
+### 8E. Non-AI product (app, site, tool with no model in the loop)
+
+**Swap table — run the core phases with these substitutions (nothing is silently skipped; each swap is
+graded under the same pillar as the original):**
+
+| Core question | Non-AI analog to ask instead |
+|---|---|
+| S1 (model cost) | What does one user/request cost to serve (hosting, DB, third-party APIs) at expected volume, and what's the plan if a cost line spikes? |
+| S5 (provider down) | When your critical third-party dependency (payments, auth, email) is down, what does the user see and what degrades gracefully? |
+| S8 (prompt changes) | How do config/copy/feature changes ship safely — flags, staged rollout, rollback? |
+| E1–E2 (golden set/judge) | What's your test pyramid — unit/integration/end-to-end — and which user-critical flows have automated end-to-end coverage? |
+| E3 (weird inputs) | Same question, no swap — feed 5 hostile/malformed inputs to your forms and APIs. |
+| E4–E5 (decomposed evals/gates) | Does CI block a merge when a test fails, and does every production bug become a permanent regression test? |
+| SH1 (injection) | Where does user-supplied content get rendered or executed (XSS, SQL injection, file uploads) and what neutralizes it? |
+| SH2 (tool limits) | Which destructive user actions (delete, pay, share) are confirmed, permissioned, and reversible? |
+| SH7 (refusals) | n/a — log the skip in the decision log. |
+
+- [C · GEN1] `[Reliability & Ownership][UX/UI & Interaction]` **What's your speed budget — how slow can the key screen or endpoint be before users feel it, and what enforces that number?**
+  - 🤔 Not sure what I mean? → Pick your most-used page or API call. Decide a number ("loads in under 2 seconds for most users"). Then: what actually keeps it under that — a check, a test, an alert?
+  - Weak: "it feels fast to me." · Good: a target number, checked manually sometimes. · Great: a stated p95 budget per key flow, measured on real(istic) devices/networks, with an alert or CI check when it's breached, and the heaviest asset/query named.
+  - 📝 Example: "Search results p95 < 800ms; a Lighthouse CI budget fails the build over 200KB JS; the slowest query has an index and a dashboard alert at 1s."
+  - 💡 Why it matters: performance regressions arrive silently, one dependency at a time — only a budget with an enforcer catches them. (web.dev Core Web Vitals)
+  - 📄 Creates: `docs/ARCHITECTURE.md` §Performance budget.
+
+- [C · GEN2] `[System Design][Reliability & Ownership]` **When you change the database's shape (a migration), how do you roll it out — and back — without losing user data?**
+  - 🤔 Not sure what I mean? → You rename a column or restructure a table while real users' data is in it. What's the sequence so nothing breaks mid-deploy, and what's the undo if it goes wrong?
+  - Weak: "edit the schema and redeploy." · Good: versioned migration files, run on deploy. · Great: expand-then-contract (add new alongside old, backfill, switch, remove later), tested against a production-like copy, with a rollback path and a backup taken before each migration.
+  - 📝 Example: "Migrations in /migrations, applied by CI; renames done as add→backfill→switch→drop over two releases; nightly backups restore-tested monthly."
+  - 💡 Why it matters: schema changes are the most common way small products destroy user data — the pattern, not luck, is what protects it. (evolutionary database design)
+  - 📄 Creates: `docs/ARCHITECTURE.md` §Migrations.
+
+- [C · GEN3] `[Product Judgment][Economics]` **How does this make (or save) money — and what does one user cost you versus bring you?**
+  - 🤔 Not sure what I mean? → Even a free tool has a cost per user (hosting, support, your time). What's the plan: paid? free forever? portfolio piece? And do the unit numbers work?
+  - Weak: "I'll figure out monetization later." · Good: a pricing idea with rough costs. · Great: cost-to-serve per user vs revenue (or explicit non-revenue goal) with the break-even or budget line named, and the pricing decision logged as reversible/irreversible.
+  - 📝 Example: "Free tier costs ~$0.03/user/mo; Pro at $8 covers it at 60 users; goal for v1 is 100 actives, not revenue — logged in DECISION_LOG as revisit-at-500."
+  - 💡 Why it matters: unit economics decided late become architecture rewrites — the free tier you can't afford is a design flaw, not a pricing flaw. (a16z/Lenny's unit-economics basics)
+  - 📄 Creates: `docs/COST.md`, `docs/PRD.md` §Business case.
+
+- [A · GEN4] `[Communication][Product Judgment]` **How will the first 100 users find this — name the single channel you're betting on and the evidence it can work.**
+  - 🤔 Not sure what I mean? → "Build it and they will come" is the classic failure. Which one place — a community, SEO, a launch platform, your network — do you believe delivers your first users, and why?
+  - Weak: "I'll share it around." · Good: names a channel. · Great: one primary channel with evidence (where those users already gather, a comparable launch that worked), a concrete first post/asset drafted, and a number that defines "the channel works."
+  - 📝 Example: "Bet: the r/shopify community — 3 comparable tools got 200+ signups from launch posts there. Draft post written; channel works if 50 signups in week one."
+  - 💡 Why it matters: distribution decided after launch is a relaunch — the channel bet shapes positioning, onboarding, even features. (Lenny's growth guides)
+  - 📄 Creates: `docs/PRD.md` §Distribution.
+
 ---
 
 ## 9. Stakeholder-simulation mode (role-play a senior reviewer to pressure-test the product)
@@ -586,13 +648,14 @@ The OS is only as good as its last project. After every build, run this ritual �
 
 1. **Harvest (Phase 6, R3).** Capture every new failure mode as a candidate question — with a draft
    plain-English rubric, a `🤔` re-phrasing, and the artifact it should write.
-2. **Append to the hub repo's `LEARNINGS.md`** (repo root, next to `data/scorecards.json`; set
+2. **Append to the hub repo's `LEARNINGS.md`** (repo root; scores live in `docs/data/scorecards.json`; set
    `BUILD_OS_HUB` to point elsewhere): `date · product-type · phase · new question · rubric · source · artifact`.
    A fresh clone of the hub works with no edits — the loop's memory is versioned and public.
 3. **Promote.** When a question shows up for 2+ projects, promote it into the right phase/type pack and
    bump the version (v1.2 → v1.3). Note it in the `## Changelog`.
 4. **Prune.** If a question never discriminates (I always ace it effortlessly), demote it from `[C]` to
-   `[A]` or cut it, so the bank stays sharp.
+   `[A]` or retire it, so the bank stays sharp. **A retired question's `id` is never reused** — list it
+   under `## Retired` in the changelog so old heatmap rows stay meaningful.
 5. **Re-source every ~5 projects.** Re-run web research on evals/agents/safety/UX rubrics and fold
    in what's new — the field moves fast. Track it: the scorecard's `projects_since_resource_refresh`
    counts up each project and resets to 0 on a refresh. If you can't point to the counter, you
@@ -606,7 +669,7 @@ also feeds the OS.
 ## 12. Scorecard output (feeds the dashboard)
 
 At the **end of every project**, after the coverage check (§10), write a `scorecard.json` into the
-project repo root AND append/update the entry in the hub's `data/scorecards.json`. Grade each answered
+project repo root AND append/update the entry in the hub's `docs/data/scorecards.json`. Grade each answered
 question `weak | good | great`, and score each of the nine pillars 0–10 from those grades (great≈9–10,
 good≈6–8, weak≈2–5; average a pillar's questions). Be honest — an inflated scorecard defeats the loop.
 
@@ -615,8 +678,8 @@ score it `null` — never invent or carry over a number. The dashboard renders n
 A gap you can see is information; a guessed score is corruption of the loop.
 
 **Hub location:** the hub repo is found via `BUILD_OS_HUB` (env/config), defaulting to the repo that
-holds `data/scorecards.json`. If it's unreachable from this project, output the JSON block and tell
-me to paste it into the hub's `data/scorecards.json` — never skip the append silently.
+holds `docs/data/scorecards.json`. If it's unreachable from this project, output the JSON block and tell
+me to paste it into the hub's `docs/data/scorecards.json` — never skip the append silently.
 
 **Pack artifacts:** type packs may add artifact keys (e.g. `"MODEL_CARD.md"` for fine-tune builds) —
 add them to the `artifacts` object rather than losing them.
@@ -678,3 +741,12 @@ the **one thing** to focus on next — that closes the loop between builds.
   (κ, not raw agreement); interview-prep framing replaced with production framing. Dashboard: 9-pillar
   colors, "nine pillars" header, adr chips, sample scorecard corrected (83, not 85), null-pillar and
   formula-drift guards.
+- v1.4 — Stress-test pass (2026-08-01). Scope broadened from "AI products" to all products: new §8E
+  Non-AI pack (swap table + GEN1 performance budget, GEN2 migrations, GEN3 unit economics, GEN4
+  distribution). New core SH10 (classic security: authn/authz, secrets, dependency scanning — OWASP
+  web Top 10, not just the LLM list) and advanced D8 (metric instrumentation before launch). Pipeline
+  fixes: `data/` moved under `docs/data/` so GitHub Pages can actually serve real scorecards (the old
+  path 404'd on Pages — dashboard could never leave sample mode); scorecards.json now ships empty
+  (samples live only in index.html); hub under git; artifact skeletons added in `templates/`;
+  `reusable/` created; scorecard validator script added; question-id retirement rule added (§11.4);
+  audit prompt made version-agnostic. Dashboard: overall shown as /100, not %.

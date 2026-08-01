@@ -2,7 +2,7 @@
   "project": "kebab-case-repo-name",
   "title": "Human Readable Title",
   "date": "YYYY-MM-DD",
-  "type": "rag | agent | fine-tune | api | mixed",
+  "type": "rag | agent | fine-tune | api | non-ai | mixed",
   "overall": 0,
   "pillars": {
     "Product Judgment": 0,

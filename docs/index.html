@@ -103,7 +103,7 @@ function render(data){
   const _pv=PILLARS.map(p=>latest.pillars[p]).filter(v=>v!=null); const avg=_pv.reduce((a,b)=>a+b,0)/(_pv.length||1);
   const first=P[0].overall, delta=latest.overall-first;
   document.getElementById('kpis').innerHTML=`
-   <div class="kpi"><div class="n">${latest.overall}%</div><div class="l">Latest overall</div></div>
+   <div class="kpi"><div class="n">${latest.overall}<span style="font-size:14px;color:var(--mut)">/100</span></div><div class="l">Latest overall</div></div>
    <div class="kpi"><div class="n" style="color:${delta>=0?'var(--good)':'var(--bad)'}">${delta>=0?'+':''}${delta}</div><div class="l">Since first project</div></div>
    <div class="kpi"><div class="n">${P.length}</div><div class="l">Projects tracked</div></div>
    <div class="kpi"><div class="n">${latest.weakest_pillar}</div><div class="l" style="font-size:11px">Weakest pillar now</div></div>`;
@@ -124,7 +124,7 @@ function render(data){
   document.getElementById('pcards').innerHTML=P.slice().reverse().map(p=>{
     const arts=Object.entries(p.artifacts).map(([k,v])=>`<span class="art ${v?'ok':'no'}">${v?'✓':'✗'} ${k.replace('.md','')}</span>`).join('');
     const pills=PILLARS.map(k=>`<div class="pill"><span>${k}</span><span>${p.pillars[k]==null?'—':p.pillars[k]+'/10'}</span></div>`).join('');
-    return `<div class="pcard"><div class="top"><b>${p.title}</b><span class="score">${p.overall}%</span></div>
+    return `<div class="pcard"><div class="top"><b>${p.title}</b><span class="score">${p.overall}</span></div>
       <div class="bar"><i style="width:${p.overall}%"></i></div>
       <div style="font-size:11px;color:var(--mut);margin-bottom:8px">${p.date} · ${p.type}</div>
       ${pills}<div class="arts">${arts}</div>
