@@ -109,6 +109,22 @@
   #askOut .msg .a { margin-top:3px; }
   #askOut .msg .a::before { content:"Build OS · "; color:var(--accent); font-weight:700; font-size:13px; }
   .empty-note { font-size:14px; color:var(--faint); padding:8px 0; }
+  /* "How to read this" tooltips */
+  .info { position:relative; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; margin-left:8px; border-radius:50%; border:1px solid var(--line-2);
+    background:transparent; color:var(--faint); font-size:11px; font-weight:700; cursor:help;
+    vertical-align:2px; font-family:var(--sans); }
+  .info:hover, .info:focus-visible { border-color:var(--accent); color:var(--accent); outline:none; }
+  .info::after { content:attr(data-tip); position:absolute; left:50%; bottom:calc(100% + 9px);
+    transform:translateX(-50%); width:min(290px, 74vw); background:var(--ink); color:var(--bg);
+    font-size:12.5px; font-weight:400; line-height:1.5; text-align:left; padding:10px 12px;
+    border-radius:9px; opacity:0; pointer-events:none; transition:opacity .15s; z-index:60;
+    box-shadow:0 8px 24px rgba(0,0,0,.35); }
+  .info::before { content:""; position:absolute; left:50%; bottom:calc(100% + 3px); transform:translateX(-50%);
+    border:6px solid transparent; border-top-color:var(--ink); opacity:0; transition:opacity .15s; }
+  .info:hover::after, .info:focus-visible::after, .info:hover::before, .info:focus-visible::before { opacity:1; }
+  .card:first-child .info::after, .ask .info::after { bottom:auto; top:calc(100% + 9px); }
+  .card:first-child .info::before, .ask .info::before { bottom:auto; top:calc(100% + 3px); border-top-color:transparent; border-bottom-color:var(--ink); }
 </style>
 </head>
 <body>
@@ -129,7 +145,7 @@
     <div id="banner" class="banner"></div>
   </header>
   <div class="ask">
-    <div class="lbl">Ask the dashboard</div>
+    <div class="lbl">Ask the dashboard<button class="info" data-tip="Type a question about the data, or tap a suggestion chip. Answers are computed instantly from the live scorecards, right in your browser. Your thread is remembered only on your own device.">i</button></div>
     <div class="ask-row">
       <input class="search" id="askIn" type="text" placeholder="e.g. How's the trend? Tell me about RoleOS. What are the standout pillars?" aria-label="Ask a question about the dashboard">
       <button class="ask-btn" id="askGo">Ask</button>
@@ -141,16 +157,16 @@
   <div class="kpis" id="kpis"></div>
   <div class="grid">
     <div class="card">
-      <div class="card-head"><div><h2>Current craft level</h2><div class="h-sub">Any project, all pillars. Pick one to compare</div></div>
+      <div class="card-head"><div><h2>Current craft level<button class="info" data-tip="Each spoke is one of the nine craft pillars, scored 0 to 10. The bigger and rounder the orange shape, the stronger and more balanced the project. Use the picker to view any project.">i</button></h2><div class="h-sub">Any project, all pillars. Pick one to compare</div></div>
         <select class="search" id="radarSel" aria-label="Choose project for radar" style="min-width:150px"></select></div>
       <canvas id="radar" height="260"></canvas></div>
-    <div class="card"><h2>Improvement over time</h2><div class="h-sub">Overall score across projects. Am I compounding?</div><canvas id="trend" height="260"></canvas></div>
+    <div class="card"><h2>Improvement over time<button class="info" data-tip="Projects in build order, left to right. The solid line is each project's overall score; the faint dashed lines are the nine individual pillars. Rising lines mean each build is starting from a higher bar.">i</button></h2><div class="h-sub">Overall score across projects. Am I compounding?</div><canvas id="trend" height="260"></canvas></div>
     <div class="card full">
-      <div class="card-head"><div><h2>Projects</h2><div class="h-sub">Per-project scorecards: grade, pillars, artifacts, next focus</div></div>
+      <div class="card-head"><div><h2>Projects<button class="info" data-tip="One card per scored product. The big number is its overall score out of 100; below are the nine pillar scores (0 to 10). The chips show which of the 13 Build OS artifacts exist in the repo: green means present. The note at the bottom is that project's single next improvement.">i</button></h2><div class="h-sub">Per-project scorecards: grade, pillars, artifacts, next focus</div></div>
         <input class="search" id="pSearch" type="search" placeholder="Filter projects: name, type, pillar…" aria-label="Filter projects"></div>
       <div class="pcards" id="pcards"></div><div class="empty-note" id="pEmpty" style="display:none">No projects match that filter.</div></div>
     <div class="card full">
-      <div class="card-head"><div><h2>Question heatmap</h2><div class="h-sub">Every question, every project: strengths and where the next gains are</div></div>
+      <div class="card-head"><div><h2>Question heatmap<button class="info" data-tip="Every product is asked the same audit questions. Each square is one answer's grade: green great, yellow good, red weak, grey not asked. Read a row across to see how consistent a skill is; read a column down for one product's profile.">i</button></h2><div class="h-sub">Same questions, every product: a row shows consistency, a column shows one product's profile</div></div>
         <input class="search" id="hSearch" type="search" placeholder="Filter questions: label, id, or weak/good/great…" aria-label="Filter heatmap questions"></div>
 
       <div style="overflow:auto"><table id="heat"></table></div><div class="empty-note" id="hEmpty" style="display:none">No questions match that filter.</div>
@@ -213,7 +229,7 @@ function render(data){
     return v.length&&Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)!==p.overall;}).map(p=>p.project);
   if(drift.length){const b=document.getElementById('banner');
     b.textContent+=` ⚠ overall ≠ pillar mean for: ${drift.join(', ')}. Recompute per §12.`; b.classList.add('show');}
-  document.getElementById('focus').innerHTML=`Now sharpening: <b>${latest.weakest_pillar}</b>. ${latest.next_focus||''}`;
+  document.getElementById('focus').innerHTML=`Now sharpening: <b>${latest.weakest_pillar}</b>. ${latest.next_focus||''} <button class="info" data-tip="After every audit, the system names exactly one thing to improve next, taken from the latest scored project. This is the self-improving loop in action: the gap is named, not hidden.">i</button>`;
   const first=P[0].overall, delta=latest.overall-first;
   document.getElementById('kpis').innerHTML=`
    <div class="kpi"><div class="v num">${latest.overall}<span class="u">/100</span></div><div class="k">Latest overall</div></div>
@@ -252,7 +268,7 @@ function render(data){
       <div class="bar"><i style="width:${p.overall}%"></i></div>
       <div class="meta">${p.date} · ${p.type}</div>
       ${pills}<div class="arts">${arts}</div>
-      ${p.next_focus?`<div class="note">Next: ${p.next_focus}</div>`:''}</div>`;}).join('');
+      ${p.next_focus?`<div class="note">${p.next_focus}</div>`:''}</div>`;}).join('');
   // Heatmap (data-q carries label + id + grades for the filter)
   const labels={}; P.forEach(p=>(p.questions||[]).forEach(q=>{labels[q.id]=q.label||q.id;}));
   let h=`<tr><th>Question</th>${P.map(p=>`<th title="${p.title}">${p.title.length>14?p.title.slice(0,13)+'…':p.title}</th>`).join('')}</tr>`;
