@@ -1,0 +1,50 @@
+{
+  "project": "kebab-case-repo-name",
+  "title": "Human Readable Title",
+  "date": "YYYY-MM-DD",
+  "type": "rag | agent | fine-tune | api | mixed",
+  "overall": 0,
+  "pillars": {
+    "Product Judgment": 0,
+    "System Design": 0,
+    "Evaluation": 0,
+    "Reliability & Ownership": 0,
+    "Safety": 0,
+    "Economics": 0,
+    "Communication": 0,
+    "UX/UI & Interaction": 0,
+    "Collaboration & Stakeholders": 0
+  },
+  "artifacts": {
+    "PRD.md": false,
+    "ARCHITECTURE.md": false,
+    "adr": false,
+    "UX.md": false,
+    "ENGINEERING.md": false,
+    "FAILURE_MODES.md": false,
+    "SAFETY.md": false,
+    "COST.md": false,
+    "STAKEHOLDERS.md": false,
+    "DECISION_LOG.md": false,
+    "evals": false,
+    "README.md": false,
+    "app": false
+  },
+  "questions": [
+    {
+      "id": "D1",
+      "phase": "Discovery",
+      "label": "user + messy input",
+      "pillars": [
+        "Product Judgment",
+        "Communication"
+      ],
+      "grade": "weak|good|great"
+    }
+  ],
+  "notes": "",
+  "weakest_pillar": "",
+  "next_focus": "",
+  "loop_ran": false,
+  "projects_since_resource_refresh": 0
+}

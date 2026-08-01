@@ -1,0 +1,375 @@
+{
+  "updated": "2026-07-31",
+  "owner": "your-github-handle",
+  "projects": [
+    {
+      "project": "rag-notes",
+      "title": "RAG Notes Assistant",
+      "date": "2026-05-10",
+      "type": "rag",
+      "overall": 57,
+      "pillars": {
+        "Product Judgment": 7,
+        "System Design": 6,
+        "Evaluation": 6,
+        "Reliability & Ownership": 5,
+        "Safety": 4,
+        "Economics": 6,
+        "Communication": 8,
+        "UX/UI & Interaction": 5,
+        "Collaboration & Stakeholders": 4
+      },
+      "artifacts": {
+        "PRD.md": true,
+        "ARCHITECTURE.md": true,
+        "adr": false,
+        "UX.md": false,
+        "ENGINEERING.md": false,
+        "FAILURE_MODES.md": false,
+        "SAFETY.md": false,
+        "COST.md": true,
+        "STAKEHOLDERS.md": false,
+        "DECISION_LOG.md": true,
+        "evals": true,
+        "README.md": true,
+        "app": true
+      },
+      "questions": [
+        {
+          "id": "D1",
+          "phase": "Discovery",
+          "label": "user + messy input",
+          "pillars": [
+            "Product Judgment",
+            "Communication"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "D5",
+          "phase": "Discovery",
+          "label": "stakeholder map",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "S3",
+          "phase": "Design",
+          "label": "big technical choice (ADR)",
+          "pillars": [
+            "System Design"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "S4",
+          "phase": "Design",
+          "label": "states users see",
+          "pillars": [
+            "UX/UI & Interaction",
+            "Product Judgment"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "B2",
+          "phase": "Build",
+          "label": "testing strategy",
+          "pillars": [
+            "Reliability & Ownership"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "E1",
+          "phase": "Eval",
+          "label": "golden set",
+          "pillars": [
+            "Evaluation"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "E2",
+          "phase": "Eval",
+          "label": "judge trustworthy",
+          "pillars": [
+            "Evaluation"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "SH1",
+          "phase": "Ship",
+          "label": "injection/safety",
+          "pillars": [
+            "Safety"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "R1",
+          "phase": "Retro",
+          "label": "kill criteria",
+          "pillars": [
+            "Product Judgment"
+          ],
+          "grade": "good"
+        }
+      ],
+      "weakest_pillar": "Collaboration & Stakeholders",
+      "next_focus": "Add UX states + STAKEHOLDERS + injection screening.",
+      "loop_ran": true,
+      "projects_since_resource_refresh": 1
+    },
+    {
+      "project": "support-triage-agent",
+      "title": "Support Triage Agent",
+      "date": "2026-06-22",
+      "type": "agent",
+      "overall": 70,
+      "pillars": {
+        "Product Judgment": 8,
+        "System Design": 7,
+        "Evaluation": 8,
+        "Reliability & Ownership": 7,
+        "Safety": 5,
+        "Economics": 7,
+        "Communication": 8,
+        "UX/UI & Interaction": 7,
+        "Collaboration & Stakeholders": 6
+      },
+      "artifacts": {
+        "PRD.md": true,
+        "ARCHITECTURE.md": true,
+        "adr": true,
+        "UX.md": true,
+        "ENGINEERING.md": true,
+        "FAILURE_MODES.md": true,
+        "SAFETY.md": false,
+        "COST.md": true,
+        "STAKEHOLDERS.md": true,
+        "DECISION_LOG.md": true,
+        "evals": true,
+        "README.md": true,
+        "app": true
+      },
+      "questions": [
+        {
+          "id": "D1",
+          "phase": "Discovery",
+          "label": "user + messy input",
+          "pillars": [
+            "Product Judgment",
+            "Communication"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "D5",
+          "phase": "Discovery",
+          "label": "stakeholder map",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "S3",
+          "phase": "Design",
+          "label": "big technical choice (ADR)",
+          "pillars": [
+            "System Design"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "S4",
+          "phase": "Design",
+          "label": "states users see",
+          "pillars": [
+            "UX/UI & Interaction",
+            "Product Judgment"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "B2",
+          "phase": "Build",
+          "label": "testing strategy",
+          "pillars": [
+            "Reliability & Ownership"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "E1",
+          "phase": "Eval",
+          "label": "golden set",
+          "pillars": [
+            "Evaluation"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "E2",
+          "phase": "Eval",
+          "label": "judge trustworthy",
+          "pillars": [
+            "Evaluation"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "SH1",
+          "phase": "Ship",
+          "label": "injection/safety",
+          "pillars": [
+            "Safety"
+          ],
+          "grade": "weak"
+        },
+        {
+          "id": "R1",
+          "phase": "Retro",
+          "label": "kill criteria",
+          "pillars": [
+            "Product Judgment"
+          ],
+          "grade": "good"
+        }
+      ],
+      "weakest_pillar": "Safety",
+      "next_focus": "Write SAFETY.md with tool scoping + human-in-loop gates.",
+      "loop_ran": true,
+      "projects_since_resource_refresh": 2
+    },
+    {
+      "project": "invoice-reconciler",
+      "title": "Invoice Reconciler",
+      "date": "2026-07-28",
+      "type": "agent",
+      "overall": 83,
+      "pillars": {
+        "Product Judgment": 9,
+        "System Design": 8,
+        "Evaluation": 9,
+        "Reliability & Ownership": 8,
+        "Safety": 8,
+        "Economics": 8,
+        "Communication": 9,
+        "UX/UI & Interaction": 8,
+        "Collaboration & Stakeholders": 8
+      },
+      "artifacts": {
+        "PRD.md": true,
+        "ARCHITECTURE.md": true,
+        "adr": true,
+        "UX.md": true,
+        "ENGINEERING.md": true,
+        "FAILURE_MODES.md": true,
+        "SAFETY.md": true,
+        "COST.md": true,
+        "STAKEHOLDERS.md": true,
+        "DECISION_LOG.md": true,
+        "evals": true,
+        "README.md": true,
+        "app": true
+      },
+      "questions": [
+        {
+          "id": "D1",
+          "phase": "Discovery",
+          "label": "user + messy input",
+          "pillars": [
+            "Product Judgment",
+            "Communication"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "D5",
+          "phase": "Discovery",
+          "label": "stakeholder map",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "S3",
+          "phase": "Design",
+          "label": "big technical choice (ADR)",
+          "pillars": [
+            "System Design"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "S4",
+          "phase": "Design",
+          "label": "states users see",
+          "pillars": [
+            "UX/UI & Interaction",
+            "Product Judgment"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "B2",
+          "phase": "Build",
+          "label": "testing strategy",
+          "pillars": [
+            "Reliability & Ownership"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "E1",
+          "phase": "Eval",
+          "label": "golden set",
+          "pillars": [
+            "Evaluation"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "E2",
+          "phase": "Eval",
+          "label": "judge trustworthy",
+          "pillars": [
+            "Evaluation"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "SH1",
+          "phase": "Ship",
+          "label": "injection/safety",
+          "pillars": [
+            "Safety"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "R1",
+          "phase": "Retro",
+          "label": "kill criteria",
+          "pillars": [
+            "Product Judgment"
+          ],
+          "grade": "great"
+        }
+      ],
+      "weakest_pillar": "System Design",
+      "next_focus": "Push scale reasoning to 1000x + caching test.",
+      "loop_ran": true,
+      "projects_since_resource_refresh": 3
+    }
+  ]
+}
