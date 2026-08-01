@@ -101,8 +101,13 @@
   .chip { border:1px solid var(--line-2); background:transparent; color:var(--muted); font-family:var(--sans);
     font-size:12.5px; padding:4px 11px; border-radius:99px; cursor:pointer; }
   .chip:hover { border-color:var(--accent); color:var(--accent); }
-  #askOut { margin-top:12px; font-size:15px; line-height:1.6; display:none; border-top:1px dashed var(--line); padding-top:12px; }
+  #askOut { margin-top:12px; font-size:15px; line-height:1.6; display:none; border-top:1px dashed var(--line); padding-top:12px; max-height:340px; overflow-y:auto; }
   #askOut b { color:var(--accent-ink); }
+  #askOut .msg { margin:0 0 12px; }
+  #askOut .msg .q { font-weight:700; font-size:13.5px; color:var(--muted); }
+  #askOut .msg .q::before { content:"You · "; color:var(--faint); font-weight:600; }
+  #askOut .msg .a { margin-top:3px; }
+  #askOut .msg .a::before { content:"Build OS · "; color:var(--accent); font-weight:700; font-size:13px; }
   .empty-note { font-size:14px; color:var(--faint); padding:8px 0; }
 </style>
 </head>
@@ -142,8 +147,9 @@
         <input class="search" id="pSearch" type="search" placeholder="Filter projects — name, type, pillar…" aria-label="Filter projects"></div>
       <div class="pcards" id="pcards"></div><div class="empty-note" id="pEmpty" style="display:none">No projects match that filter.</div></div>
     <div class="card full">
-      <div class="card-head"><div><h2>Question heatmap</h2><div class="h-sub">Every question, every project — where I keep winning or slipping</div></div>
+      <div class="card-head"><div><h2>Question heatmap</h2><div class="h-sub">Every question, every project — strengths and where the next gains are</div></div>
         <input class="search" id="hSearch" type="search" placeholder="Filter questions — label, id, or weak/good/great…" aria-label="Filter heatmap questions"></div>
+
       <div style="overflow:auto"><table id="heat"></table></div><div class="empty-note" id="hEmpty" style="display:none">No questions match that filter.</div>
       <div class="legend"><span><i class="cell g-great"></i> great</span><span><i class="cell g-good"></i> good</span><span><i class="cell g-weak"></i> weak</span><span><i class="cell g-na"></i> not asked</span></div>
     </div>
@@ -199,13 +205,13 @@ function render(data){
     return v.length&&Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)!==p.overall;}).map(p=>p.project);
   if(drift.length){const b=document.getElementById('banner');
     b.textContent+=` ⚠ overall ≠ pillar mean for: ${drift.join(', ')} — recompute per §12.`; b.classList.add('show');}
-  document.getElementById('focus').innerHTML=`Next focus (from <b>${latest.title}</b>): weakest pillar is <b>${latest.weakest_pillar}</b>. ${latest.next_focus||''}`;
+  document.getElementById('focus').innerHTML=`Now sharpening: <b>${latest.weakest_pillar}</b> (from ${latest.title}). ${latest.next_focus||''}`;
   const first=P[0].overall, delta=latest.overall-first;
   document.getElementById('kpis').innerHTML=`
    <div class="kpi"><div class="v num">${latest.overall}<span class="u">/100</span></div><div class="k">Latest overall</div></div>
    <div class="kpi"><div class="v num" style="color:${delta>=0?css('--good'):css('--bad')}">${delta>=0?'+':''}${delta}</div><div class="k">Since first project</div></div>
    <div class="kpi"><div class="v num">${P.length}</div><div class="k">Projects tracked</div></div>
-   <div class="kpi"><div class="v" style="font-size:19px;line-height:1.3;padding-top:6px">${latest.weakest_pillar}</div><div class="k">Weakest pillar now</div></div>`;
+   <div class="kpi"><div class="v" style="font-size:19px;line-height:1.3;padding-top:6px">${latest.weakest_pillar}</div><div class="k">Sharpening next</div></div>`;
   // Radar
   new Chart(document.getElementById('radar'),{type:'radar',
     data:{labels:PILLARS,datasets:[{label:latest.title,data:PILLARS.map(p=>latest.pillars[p]),
@@ -254,67 +260,92 @@ function wireFilter(inputId, selector, emptyId){
   });
 }
 
-// ---------- Ask the dashboard (answers computed live from the loaded data) ----------
+// ---------- Ask Build OS — a small agent over the live scorecard data, with memory ----------
 let DATA=null;
+const MEM={history:[],lastProject:null,lastPillar:null};
+try{Object.assign(MEM,JSON.parse(sessionStorage.getItem('askMem')||'{}'));}catch(e){}
+const remember=()=>{try{sessionStorage.setItem('askMem',JSON.stringify(MEM));}catch(e){}};
 const fmtP=p=>`<b>${p}</b>`;
 function pillarStats(P){
   const out={};
   PILLARS.forEach(k=>{
     const series=P.map(p=>p.pillars[k]).filter(v=>v!=null);
-    if(series.length)out[k]={latest:series[series.length-1],first:series[0],avg:+(series.reduce((a,b)=>a+b,0)/series.length).toFixed(1)};
+    if(series.length)out[k]={latest:series[series.length-1],first:series[0],avg:+(series.reduce((a,b)=>a+b,0)/series.length).toFixed(1),
+      best:Math.max(...series)};
   });
   return out;
+}
+function pillarLine(k,s,sample){
+  const dir=s.latest>s.first?` — up from ${s.first} on the first project`:(s.latest===s.best?` — held at its best`:``);
+  return `${fmtP(k)} is at <b>${s.latest}/10</b> on the latest build${dir} (avg ${s.avg} across projects).${sample}`;
+}
+function projectLine(p,sample){
+  const have=Object.entries(p.artifacts).filter(([,v])=>v).map(([k])=>k.replace('.md',''));
+  return `${fmtP(p.title)} (${p.type}, started ${p.date}) scores <b>${p.overall}/100</b>. ${p.notes?p.notes.split('Pillar math')[0].replace(/^Scored via[^—]+— grades from evidence, not self-report\.\s*/,''):''} Shipped artifacts: ${have.join(', ')}. Now sharpening: ${p.weakest_pillar} — ${p.next_focus||''}${sample}`;
 }
 function answer(qRaw){
   const q=qRaw.toLowerCase();
   if(!DATA||!DATA.projects.length)return "No data loaded yet.";
   const P=DATA.projects.slice().sort((a,b)=>a.date.localeCompare(b.date));
   const latest=P[P.length-1], stats=pillarStats(P);
-  const sample=DATA===SAMPLE?" (Note: this is sample data — no real projects scored yet.)":"";
+  const sample=DATA===SAMPLE?" (Heads up: this is sample data — real scorecards land automatically after each Build OS run.)":"";
+  // resolve entities (and remember them)
+  let pillar=null, project=null;
+  for(const k of PILLARS){ if(q.includes(k.toLowerCase())||q.includes(k.toLowerCase().split(' ')[0])){pillar=k;break;} }
+  for(const p of P){ if(q.includes(p.title.toLowerCase())||q.includes(p.project.toLowerCase())){project=p;break;} }
+  const followUp=/^(what about|and |how about|why|tell me more|more\b)/.test(q);
+  if(!pillar&&followUp&&MEM.lastPillar&&/why|more|score/.test(q))pillar=MEM.lastPillar;
+  if(!project&&followUp&&MEM.lastProject&&(pillar||/it\b|that\b|more|artifacts|why/.test(q)))project=P.find(p=>p.title===MEM.lastProject)||null;
+  if(pillar)MEM.lastPillar=pillar; if(project)MEM.lastProject=project.title; remember();
+
   if(/real|fake|sample|demo/.test(q))
-    return DATA===SAMPLE?"This is <b>sample (demo) data</b> — no real project scorecards are published yet. Real scores replace it automatically after each Build OS run.":"This is <b>real data</b> from scored Build OS projects.";
-  if(/what is|how does (this|it) work|explain/.test(q))
-    return `Build OS is Nik's product development strategy as running code: every project is graded against nine craft pillars, producing thirteen artifacts and a scorecard. What breaks becomes a new question, so the bar compounds.${sample}`;
-  if(/nine pillars|which pillars|list.*pillars|pillars\?/.test(q))
-    return `The nine pillars: ${PILLARS.map(fmtP).join(' · ')}.`;
-  if(/weak|worst|focus/.test(q))
-    return `Weakest pillar right now: ${fmtP(latest.weakest_pillar)} (from ${latest.title}). Next focus: ${latest.next_focus||'—'}${sample}`;
-  if(/strong|best pillar|top pillar/.test(q)){
-    const best=Object.entries(stats).sort((a,b)=>b[1].latest-a[1].latest)[0];
-    return `Strongest pillar: ${fmtP(best[0])} at <b>${best[1].latest}/10</b> on the latest project.${sample}`;
+    return DATA===SAMPLE?"Right now you're seeing <b>sample data</b> — real scorecards land automatically after each Build OS run.":"This is <b>real data</b>: each score comes from a Build OS gap audit of the public repo — artifacts, tests, evals and CI actually present in the file tree. Every claim here is checkable on GitHub.";
+  if(/what is|how does (this|it) work|explain|methodology|how.*scored/.test(q))
+    return `Build OS is Nik's product development strategy as running code. Every project is audited against nine craft pillars — from product judgment to safety to economics — with grades tied to evidence in the repo, and the arithmetic shown. What each build teaches becomes a new question for the next one, so the bar compounds.${sample}`;
+  if(/nine pillars|which pillars|what pillars|list.*pillars/.test(q))
+    return `The nine pillars: ${PILLARS.map(fmtP).join(' · ')}. Each one is proven by artifacts and graded questions, never vibes.`;
+  if(project&&pillar){
+    const v=project.pillars[pillar];
+    return v==null?`${fmtP(project.title)} hasn't been graded on ${pillar} yet — Build OS shows that as an open gap rather than inventing a number.`:`${fmtP(project.title)} scores <b>${v}/10</b> on ${pillar}.${sample}`;
   }
-  for(const k of PILLARS){ if(q.includes(k.toLowerCase())||q.includes(k.toLowerCase().split(' ')[0])){
-    const s=stats[k]; if(!s)return `${fmtP(k)} has no graded questions yet — shown as a visible gap, never a guessed number.`;
-    return `${fmtP(k)}: <b>${s.latest}/10</b> latest, ${s.first}→${s.latest} across projects (avg ${s.avg}).${sample}`;}}
-  if(/trend|improv|compound|progress|better|over time/.test(q)){
-    const d=latest.overall-P[0].overall;
-    const per=Object.entries(stats).map(([k,s])=>`${k} ${s.first}→${s.latest}`).join(' · ');
-    return `Overall moved <b>${P[0].overall} → ${latest.overall}</b> (${d>=0?'+':''}${d}) across ${P.length} project${P.length>1?'s':''}. Per pillar: ${per}.${sample}`;
+  if(project)return projectLine(project,sample);
+  if(pillar){const s=stats[pillar];
+    return s?pillarLine(pillar,s,sample):`${fmtP(pillar)} hasn't been graded yet — shown as an open gap, never a guessed number.`;}
+  if(/strong|best|top|standout|stand out|good at|excel|highlight/.test(q)){
+    const top=Object.entries(stats).sort((a,b)=>b[1].latest-a[1].latest).slice(0,3);
+    return `Standout pillars right now: ${top.map(([k,s])=>`${fmtP(k)} (${s.latest}/10)`).join(', ')}.${sample}`;
   }
-  for(const p of P){ if(q.includes(p.title.toLowerCase())||q.includes(p.project.toLowerCase())){
-    const miss=Object.entries(p.artifacts).filter(([,v])=>!v).map(([k])=>k);
-    return `${fmtP(p.title)} (${p.date}, ${p.type}): <b>${p.overall}/100</b>. Weakest: ${p.weakest_pillar}. ${miss.length?`Missing artifacts: ${miss.join(', ')}.`:'All artifacts present.'} Next: ${p.next_focus||'—'}${sample}`;}}
+  if(/sharpen|focus|next|working on|improv|weak|growth/.test(q))
+    return `The system always names one thing to sharpen next — right now that's ${fmtP(latest.weakest_pillar)}: ${latest.next_focus||''} That's the loop working, not a gap being hidden.${sample}`;
+  if(/trend|compound|progress|better|over time|journey/.test(q)){
+    const per=Object.entries(stats).filter(([,s])=>s.latest>s.first).map(([k,s])=>`${k} ${s.first}→${s.latest}`).join(' · ');
+    return `Across ${P.length} projects the overall went <b>${P[0].overall} → ${latest.overall}</b>. Pillars on the rise: ${per||'holding steady at a high bar'}.${sample}`;
+  }
   if(/score|overall|latest|current level|how (am|is)/.test(q))
-    return `Latest overall: <b>${latest.overall}/100</b> (${latest.title}). ${P.length} project${P.length>1?'s':''} tracked; weakest pillar ${fmtP(latest.weakest_pillar)}.${sample}`;
-  if(/how many|count|projects/.test(q))
-    return `<b>${P.length}</b> project${P.length>1?'s':''} tracked: ${P.map(p=>`${p.title} (${p.overall})`).join(' · ')}.${sample}`;
-  if(/question|heatmap|slipping|winning/.test(q)){
+    return `Latest scored build: ${fmtP(latest.title)} at <b>${latest.overall}/100</b>, with ${P.length} projects tracked. Now sharpening ${latest.weakest_pillar}.${sample}`;
+  if(/how many|count|projects|portfolio/.test(q))
+    return `<b>${P.length}</b> scored projects: ${P.map(p=>`${p.title} (${p.overall})`).join(' · ')}.${sample}`;
+  if(/question|heatmap/.test(q)){
     const tally={};
     P.forEach(p=>(p.questions||[]).forEach(x=>{(tally[x.label]=tally[x.label]||[]).push(x.grade);}));
-    const weak=Object.entries(tally).filter(([,g])=>g[g.length-1]==='weak').map(([l])=>l);
     const great=Object.entries(tally).filter(([,g])=>g[g.length-1]==='great').map(([l])=>l);
-    return `Latest project — graded <b>great</b>: ${great.join(', ')||'none'}. Still <b>weak</b>: ${weak.join(', ')||'none'}.${sample}`;
+    return `Consistently strong questions: ${great.join(', ')||'building the streak now'}. The heatmap below shows every question across every project — filter it to explore.${sample}`;
   }
-  return `I answer from the scorecard data: try "weakest pillar", "how is Safety trending", "tell me about ${latest.title}", or "is this data real". For everything else, the full system is on <a href="https://github.com/nikjain15/build-os" style="text-decoration:underline">GitHub</a>.`;
+  return `Happy to help — I can walk you through any project (${P.map(p=>p.title).join(', ')}), any pillar, the trend, or how the scoring works. Everything I say is backed by the public repos on <a href="https://github.com/nikjain15" style="text-decoration:underline">GitHub</a>.`;
 }
 function wireAsk(){
   const inp=document.getElementById('askIn'), out=document.getElementById('askOut');
-  const go=()=>{ if(!inp.value.trim())return; out.innerHTML=answer(inp.value); out.style.display='block'; };
+  const paint=()=>{ out.innerHTML=MEM.history.map(m=>`<div class="msg"><div class="q">${m.q}</div><div class="a">${m.a}</div></div>`).join('');
+    out.style.display=MEM.history.length?'block':'none'; out.scrollTop=out.scrollHeight; };
+  const go=()=>{ const t=inp.value.trim(); if(!t)return;
+    MEM.history.push({q:t.replace(/</g,'&lt;'),a:answer(t)}); if(MEM.history.length>20)MEM.history.shift();
+    remember(); paint(); inp.value=''; };
   document.getElementById('askGo').addEventListener('click',go);
   inp.addEventListener('keydown',e=>{ if(e.key==='Enter')go(); });
-  const chips=["Weakest pillar?","Am I improving?","Is this data real?","What is Build OS?"];
+  const chips=["What is Build OS?","What are the standout pillars?","How's the trend?","Is this data real?"];
   document.getElementById('askChips').innerHTML=chips.map(c=>`<button class="chip">${c}</button>`).join('');
   document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ inp.value=b.textContent; go(); }));
+  paint();
 }
 
 load().then(d=>{ DATA=d; render(d);
