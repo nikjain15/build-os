@@ -1,5 +1,7 @@
 # Build OS — a self-improving system for shipping excellent products
 
+**Built and maintained by [Nik Jain](https://github.com/nikjain15).**
+
 Build OS is an operating system for building products — AI and non-AI — with senior-level rigor. On every project
 it interviews the builder phase-by-phase, writes production artifacts (PRD, evals, failure-mode
 analysis, architecture, cost, safety, decision log) into the repo, grades the work against **nine
