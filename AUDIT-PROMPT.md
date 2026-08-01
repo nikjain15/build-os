@@ -8,7 +8,7 @@ and file a P2 to update this prompt.
 
 Paste this into a **fresh Claude session** (or a new Cowork task), attach the current `SKILL.md`
 (and, for the lockstep test, `docs/data/scorecards.json`, `docs/data/scorecard.template.json`, and
-`docs/index.html`). Run it before publishing or after any edit. A polished OS should survive the panel
+`docs/dashboard/index.html`). Run it before publishing or after any edit. A polished OS should survive the panel
 with **zero P0/P1 findings and every phase ≥8/10.**
 
 ---
@@ -78,7 +78,7 @@ stakeholder simulation, apply these tests and quote the exact line:
    role-play? Flag any simulation that a real designer/engineer/lawyer would find shallow.
 4. **Lockstep regression (most important — any drift is P0).** Confirm the pillar list is IDENTICAL in
    all four places: `SKILL.md` (the 9 pillars intro), the `scorecard.json` schema (§12), the coverage
-   matrix (§10), and `docs/index.html`'s `PILLARS` array. Confirm the scorecard schema fields and
+   matrix (§10), and the dashboard's (`docs/dashboard/index.html`) `PILLARS` array. Confirm the scorecard schema fields and
    question `id`s match what the dashboard reads. Any mismatch silently drops data from the charts —
    report it as **P0** with the exact divergence.
 5. **Deployment reality test (P0 if broken).** Trace the dashboard's data path end-to-end AS DEPLOYED:
@@ -134,7 +134,7 @@ audit. Do the following:
 2. **Verify the scorecard schema** (§12) is complete: `project, title, date, type, overall, pillars{9},
    artifacts{13}, questions[{id,phase,label,pillars,grade}], notes, weakest_pillar, next_focus`. Ensure
    every question in the bank has a stable `id` and a short `label` the heatmap can display.
-3. **Regenerate `/docs/index.html`** if the pillar set or schema changed, keeping all four views:
+3. **Regenerate `/docs/dashboard/index.html`** if the pillar set or schema changed, keeping all four views:
    9-spoke current-level radar, improvement-over-time trend, per-project scorecards, and a question
    heatmap whose rows derive from the scorecard `label`s. Keep it one self-contained file that reads
    `./data/scorecards.json` with an embedded sample-data fallback so it renders locally and on Pages.

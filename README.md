@@ -18,7 +18,8 @@ Product Judgment · System Design · Evaluation · Reliability & Ownership · Sa
 /templates/                skeletons for every artifact the OS writes (keeps output consistent)
 /reusable/                 assets extracted from builds (R2) for reuse in the next one
 /LEARNINGS.md              the loop's memory — harvested failure modes → next questions
-/docs/index.html           the GitHub Pages dashboard (radar, trend, cards, heatmap)
+/docs/index.html           the Build OS landing page (site-styled)
+/docs/dashboard/index.html the GitHub Pages dashboard (radar, trend, cards, heatmap)
 /docs/data/scorecards.json aggregated REAL scores across all my projects (feeds the dashboard)
 /docs/data/scorecard.template.json   the per-project schema
 /scripts/validate_scorecards.py      run before commit — schema + formula check
@@ -38,8 +39,9 @@ Product Judgment · System Design · Evaluation · Reliability & Ownership · Sa
 1. Push this repo to GitHub (public).
 2. Repo **Settings → Pages → Build and deployment → Source: Deploy from a branch**.
 3. **Branch: `main`, Folder: `/docs`** → Save.
-4. Wait ~1 min; your dashboard is live at `https://<your-handle>.github.io/<repo>/`.
-5. The page reads `./data/scorecards.json` (i.e. `docs/data/scorecards.json` — it must live under
+4. Wait ~1 min; the landing page is live at `https://<your-handle>.github.io/<repo>/` and the
+   dashboard at `https://<your-handle>.github.io/<repo>/dashboard/`.
+5. The dashboard reads `../data/scorecards.json` (i.e. `docs/data/scorecards.json` — it must live under
    `/docs` because Pages only publishes that folder). While the `projects` array is empty it shows
    sample data with a banner; add your first real scorecard and the banner disappears.
 
