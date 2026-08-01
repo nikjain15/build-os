@@ -191,9 +191,14 @@ const SAMPLE={projects:[
   weakest_pillar:"System Design",next_focus:"Push scale reasoning to 1000x + caching test."}
 ]};
 
+// Real-time: raw.githubusercontent updates the moment a commit lands (no Pages rebuild wait);
+// the local copy is the fallback for previews and forks. Page re-checks every 60s.
+const SOURCES=['https://raw.githubusercontent.com/nikjain15/build-os/main/docs/data/scorecards.json','../data/scorecards.json'];
 async function load(){
-  try{const r=await fetch('../data/scorecards.json',{cache:'no-store'});
-    if(r.ok){const d=await r.json(); if(d.projects&&d.projects.length) return d;}}catch(e){}
+  for(const url of SOURCES){
+    try{const r=await fetch(url,{cache:'no-store'});
+      if(r.ok){const d=await r.json(); if(d.projects&&d.projects.length) return d;}}catch(e){}
+  }
   const b=document.getElementById('banner');
   b.textContent="Showing SAMPLE (demo) data. No real project scorecards published yet. Real scores land in data/scorecards.json after each Build OS run.";
   b.classList.add('show');
@@ -360,10 +365,16 @@ function wireAsk(){
   paint();
 }
 
-load().then(d=>{ DATA=d; render(d);
+let SNAPSHOT='';
+load().then(d=>{ DATA=d; SNAPSHOT=JSON.stringify(d); render(d);
+  if(d!==SAMPLE&&d.updated){const s=document.querySelector('header.page .sub');
+    s.innerHTML+=` <span style="color:var(--accent);font-size:14px">● live</span> <span style="font-size:14px">data as of ${d.updated}</span>`;}
   wireFilter('pSearch','#pcards .pcard','pEmpty');
   wireFilter('hSearch','#heat tr[data-q]','hEmpty');
   wireAsk();
+  // Real-time: re-check the source every 60s; reload the page when new scores land.
+  setInterval(async()=>{try{const fresh=await load();
+    if(fresh!==SAMPLE&&JSON.stringify(fresh)!==SNAPSHOT)location.reload();}catch(e){}},60000);
 });
 </script>
 </body>
