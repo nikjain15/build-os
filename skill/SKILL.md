@@ -670,8 +670,16 @@ also feeds the OS.
 
 At the **end of every project**, after the coverage check (§10), write a `scorecard.json` into the
 project repo root AND append/update the entry in the hub's `docs/data/scorecards.json`. Grade each answered
-question `weak | good | great`, and score each of the nine pillars 0–10 from those grades (great≈9–10,
-good≈6–8, weak≈2–5; average a pillar's questions). Be honest — an inflated scorecard defeats the loop.
+question `weak | good | great`, and score each of the nine pillars 0–10 from those grades. **Pin the
+mapping: great=10, good=7, weak=4**, averaged across a pillar's questions. The mapping is fixed rather
+than a range so two runs of the same repo cannot drift, and so the ceiling matches the `/100` the
+dashboard renders: with great capped at 9 the highest reachable overall was 90, which made a perfect
+score unreachable by construction. Be honest — an inflated scorecard defeats the loop.
+
+**A null pillar is not free.** Because `overall` is the mean of the *non-null* pillars, leaving a
+pillar unscored can raise the headline versus filling it in honestly at `good`. Never let that shape
+what you grade: if a pillar's questions were asked and answered, score it. The null rule exists for
+questions that were never asked, not for answers you would rather not average in.
 
 **Null-pillar rule:** if a pillar had no graded questions this project (e.g. a pack didn't fire),
 score it `null` — never invent or carry over a number. The dashboard renders null as a visible gap.
