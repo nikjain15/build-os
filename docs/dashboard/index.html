@@ -94,6 +94,16 @@
   .note { font-size:13px; color:var(--muted); margin-top:10px; border-top:1px dashed var(--line); padding-top:9px; }
   .legend { font-size:12px; color:var(--faint); margin-top:12px; } .legend span { margin-right:14px; }
   .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  /* Craft signatures (ridgelines) */
+  .ridge { margin:4px 0 0; }
+  .ridge .rhead { display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:-8px; }
+  .ridge .rhead b { font-weight:800; }
+  .ridge .rhead span { color:var(--accent-ink); font-weight:800; }
+  .ridge svg { width:100%; height:88px; display:block; }
+  .rk { font-size:11px; text-anchor:middle; font-family:var(--sans); }
+  .rk.g { fill:var(--good); } .rk.y { fill:var(--warn); }
+  .raxis { display:flex; justify-content:space-between; padding:6px 34px 0 40px; font-size:10.5px; color:var(--faint); }
+  @media (max-width:600px){ .raxis span:nth-child(even){ visibility:hidden; } }
   .search { appearance:none; border:1px solid var(--line-2); background:var(--bg); color:var(--ink);
     font-family:var(--sans); font-size:14px; padding:8px 12px; border-radius:8px; min-width:220px; }
   .search::placeholder { color:var(--faint); }
@@ -171,7 +181,7 @@
       <div class="card-head"><div><h2>Current craft level<button class="info" data-tip="Each spoke is one of the nine craft pillars, scored 0 to 10. The bigger and rounder the orange shape, the stronger and more balanced the project. Use the picker to view any project.">i</button></h2><div class="h-sub">Any project, all pillars. Pick one to compare</div></div>
         <select class="search" id="radarSel" aria-label="Choose project for radar" style="min-width:150px"></select></div>
       <canvas id="radar" height="260"></canvas></div>
-    <div class="card"><h2>Score by build order<button class="info" data-tip="Projects left to right in the order they were built. The solid line is each project's overall score; the faint dashed lines are the nine individual pillars. Read this as a comparison between products, not as one product improving: every scorecard here was regenerated on the same date against the same rubric, so it is a snapshot across five builds rather than a record of change over time.">i</button></h2><div class="h-sub">Five products, oldest build to newest. All re-scored on the same date, so this compares products rather than tracking improvement</div><canvas id="trend" height="260"></canvas></div>
+    <div class="card"><h2>Craft signatures<button class="info" data-tip="Each product is a waveform across the nine pillars, in the order a product comes to life (decide to align). The green dot marks its strongest pillar, the amber dot the one it sharpens next. A flat high wave means balanced excellence; a peak is a specialty. Products run oldest build to newest; every score was audited on the same date, so compare shapes, not history. Hover any point for the exact number.">i</button></h2><div class="h-sub">One waveform per product, oldest build to newest. Green: strongest pillar. Amber: sharpening next</div><div id="ridges"></div></div>
     <div class="card full">
       <div class="card-head"><div><h2>Projects<button class="info" data-tip="One card per scored product. The big number is its overall score out of 100. Under it, the grade mix shows how that project's questions actually fell: green great, amber good, red weak. Great is the top tier and is only awarded when the evidence survives a follow-up probe, so most solid work sits at good. Then the nine pillar scores (0 to 10), the 13 Build OS artifacts (green means present in the repo), and that project's single next improvement.">i</button></h2><div class="h-sub">Per-project scorecards: grade mix, pillars, artifacts, next focus</div></div>
         <input class="search" id="pSearch" type="search" placeholder="Filter projects: name, type, pillar…" aria-label="Filter projects"></div>
@@ -266,15 +276,41 @@ function render(data){
   drawRadar(latest);
   sel.value=latest.project;
   sel.addEventListener('change',()=>drawRadar(P.find(p=>p.project===sel.value)||latest));
-  // Trend (overall bold, pillars faint)
-  const cols=[accent,'#5B8DEF','#3FB37F','#C98A00','#C4453B','#4FB6C9','#B06FC0','#8A8A88','#6E9E7C'];
-  if(cols.length<PILLARS.length){const b=document.getElementById('banner');
-    b.textContent+=' ⚠ pillar/color drift: fewer trend colors than pillars.'; b.classList.add('show');}
-  const ds=[{label:'Overall',data:P.map(p=>p.overall/10),borderColor:ink,borderWidth:3,tension:.3,pointRadius:4}];
-  PILLARS.forEach((p,i)=>ds.push({label:p,data:P.map(x=>x.pillars[p]??null),spanGaps:true,borderColor:cols[i],borderWidth:1.3,tension:.3,pointRadius:0,borderDash:[4,3]}));
-  new Chart(document.getElementById('trend'),{type:'line',
-    data:{labels:P.map(p=>p.title),datasets:ds},
-    options:{plugins:{legend:{labels:{color:faint,boxWidth:10,font:{size:10}}}},scales:{y:{min:0,max:10,ticks:{color:faint},grid:{color:line}},x:{ticks:{color:faint,font:{size:10}},grid:{color:line}}}}});
+  // Craft signatures: one smooth glowing waveform per product across the nine
+  // pillars in lifecycle order. Auto-annotates each product's strongest pillar
+  // (green) and its sharpening-next pillar (amber). Pure SVG, themed by CSS vars.
+  const LIFE=["Product Judgment","UX/UI & Interaction","System Design","Economics","Reliability & Ownership","Evaluation","Safety","Communication","Collaboration & Stakeholders"];
+  const STAGE=["decide","design","architect","cost","build","prove","ship safe","tell","align"];
+  const smooth=pts=>{const p=[pts[0],...pts,pts[pts.length-1]];let d=`M${p[1][0]},${p[1][1]} `;
+    for(let i=1;i<p.length-2;i++){const c1=[p[i][0]+(p[i+1][0]-p[i-1][0])/6,p[i][1]+(p[i+1][1]-p[i-1][1])/6],
+      c2=[p[i+1][0]-(p[i+2][0]-p[i][0])/6,p[i+1][1]-(p[i+2][1]-p[i][1])/6];
+      d+=`C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p[i+1][0]},${p[i+1][1].toFixed(1)} `;}
+    return d;};
+  const RW=960, RH=92, PADX=56;
+  let ridgeHtml='';
+  P.forEach((p,idx)=>{
+    const pts=LIFE.map((k,i)=>[PADX+i*((RW-2*PADX)/8), RH-8-((p.pillars[k]??0)/10)*66]);
+    const pv=LIFE.filter(k=>p.pillars[k]!=null);
+    const bi=LIFE.indexOf(pv.reduce((a,b)=>p.pillars[a]>=p.pillars[b]?a:b));
+    const wi=LIFE.indexOf(pv.reduce((a,b)=>p.pillars[a]<=p.pillars[b]?a:b));
+    const area=smooth(pts)+`L${pts[8][0]},${RH} L${pts[0][0]},${RH} Z`;
+    const hits=pts.map((pt,i)=>`<circle cx="${pt[0]}" cy="${pt[1]}" r="9" fill="transparent"><title>${LIFE[i]}: ${p.pillars[LIFE[i]]??'n/a'}/10</title></circle>`).join('');
+    ridgeHtml+=`<div class="ridge">
+      <div class="rhead"><b>${p.title}</b><span class="num">${p.overall}/100</span></div>
+      <svg viewBox="0 0 ${RW} ${RH+4}" preserveAspectRatio="none">
+        <defs><linearGradient id="rg${idx}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${accent}" stop-opacity="0.5"/><stop offset="1" stop-color="${accent}" stop-opacity="0.03"/></linearGradient></defs>
+        <path d="${area}" fill="url(#rg${idx})"/>
+        <path d="${smooth(pts)}" fill="none" stroke="${accent}" stroke-width="2.5"/>
+        <circle cx="${pts[bi][0]}" cy="${pts[bi][1]}" r="4.5" fill="${css('--good')}"/>
+        <circle cx="${pts[wi][0]}" cy="${pts[wi][1]}" r="4.5" fill="${css('--warn')}"/>
+        <text x="${pts[bi][0]}" y="${Math.max(12,pts[bi][1]-10)}" class="rk g">${STAGE[bi]} ${p.pillars[LIFE[bi]]}</text>
+        <text x="${pts[wi][0]}" y="${Math.min(RH-2,pts[wi][1]+19)}" class="rk y">${STAGE[wi]} ${p.pillars[LIFE[wi]]}</text>
+        ${hits}
+      </svg></div>`;
+  });
+  ridgeHtml+=`<div class="raxis">${STAGE.map(s=>`<span>${s}</span>`).join('')}</div>`;
+  document.getElementById('ridges').innerHTML=ridgeHtml;
   // Project cards (data-q carries searchable text for the filter)
   document.getElementById('pcards').innerHTML=P.slice().reverse().map(p=>{
     const arts=Object.entries(p.artifacts).map(([k,v])=>`<span class="art ${v?'ok':'no'}">${v?'✓':'✗'} ${k.replace('.md','')}</span>`).join('');
