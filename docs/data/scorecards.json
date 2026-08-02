@@ -419,13 +419,13 @@
       "title": "Pulse",
       "date": "2026-08-02",
       "type": "agent",
-      "overall": 77,
+      "overall": 78,
       "pillars": {
         "Product Judgment": 7.5,
         "System Design": 7.0,
         "Evaluation": 6.4,
-        "Reliability & Ownership": 7.0,
-        "Safety": 7.0,
+        "Reliability & Ownership": 7.43,
+        "Safety": 7.75,
         "Economics": 10.0,
         "Communication": 8.5,
         "UX/UI & Interaction": 7.0,
@@ -675,7 +675,7 @@
             "Safety",
             "Reliability & Ownership"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "GEN3",
@@ -717,9 +717,9 @@
           "grade": "great"
         }
       ],
-      "notes": "Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 732 tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 good, B3 good, B4 good, B5 good, SH3 good, SH10 weak) = 7.0; Safety = avg(E3 good, SH1 great, SH9 good, SH10 weak) = 7.0; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good, D5 great, SH5 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.711) x 10) = 77. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 732 tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 good, B3 good, B4 good, B5 good, SH3 good, SH10 good) = 7.43; Safety = avg(E3 good, SH1 great, SH9 good, SH10 good) = 7.75; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good, D5 great, SH5 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.842) x 10) = 78. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for Pulse: clear the 8 high dependency alerts open today and add npm audit to CI, then run the highest-value suites in CI. Add an emulator job to .github/workflows/ci.yml so the 253 rules, integration and e2e cases gate a merge instead of running only via npm run gate.",
+      "next_focus": "Next for Pulse: add npm audit to .github/workflows/ci.yml so alerts cannot accumulate unnoticed again, and run the highest-value suites in CI. Add an emulator job to .github/workflows/ci.yml so the 253 rules, integration and e2e cases gate a merge instead of running only via npm run gate.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
