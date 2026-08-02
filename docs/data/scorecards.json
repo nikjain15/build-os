@@ -29,7 +29,7 @@
         "FAILURE_MODES.md": false,
         "SAFETY.md": true,
         "COST.md": false,
-        "STAKEHOLDERS.md": false,
+        "STAKEHOLDERS.md": true,
         "DECISION_LOG.md": true,
         "evals": true,
         "README.md": true,
@@ -440,8 +440,8 @@
         "FAILURE_MODES.md": false,
         "SAFETY.md": false,
         "COST.md": false,
-        "STAKEHOLDERS.md": false,
-        "DECISION_LOG.md": false,
+        "STAKEHOLDERS.md": true,
+        "DECISION_LOG.md": true,
         "evals": true,
         "README.md": true,
         "app": true
@@ -758,8 +758,8 @@
         "FAILURE_MODES.md": false,
         "SAFETY.md": false,
         "COST.md": false,
-        "STAKEHOLDERS.md": false,
-        "DECISION_LOG.md": false,
+        "STAKEHOLDERS.md": true,
+        "DECISION_LOG.md": true,
         "evals": true,
         "README.md": true,
         "app": true
@@ -1076,8 +1076,8 @@
         "FAILURE_MODES.md": false,
         "SAFETY.md": false,
         "COST.md": false,
-        "STAKEHOLDERS.md": false,
-        "DECISION_LOG.md": false,
+        "STAKEHOLDERS.md": true,
+        "DECISION_LOG.md": true,
         "evals": true,
         "README.md": true,
         "app": true
@@ -1439,13 +1439,13 @@
       "title": "FounderFirst",
       "date": "2026-08-02",
       "type": "agent",
-      "overall": 74,
+      "overall": 77,
       "pillars": {
         "Product Judgment": 7.0,
         "System Design": 8.0,
         "Evaluation": 6.25,
-        "Reliability & Ownership": 7.75,
-        "Safety": 6.4,
+        "Reliability & Ownership": 8.33,
+        "Safety": 8.8,
         "Economics": 7.0,
         "Communication": 7.75,
         "UX/UI & Interaction": 7.0,
@@ -1460,8 +1460,8 @@
         "FAILURE_MODES.md": false,
         "SAFETY.md": false,
         "COST.md": false,
-        "STAKEHOLDERS.md": false,
-        "DECISION_LOG.md": false,
+        "STAKEHOLDERS.md": true,
+        "DECISION_LOG.md": true,
         "evals": true,
         "README.md": true,
         "app": true
@@ -1688,13 +1688,22 @@
           "grade": "good"
         },
         {
+          "id": "SH8",
+          "phase": "Ship",
+          "label": "incident rollback",
+          "pillars": [
+            "Reliability & Ownership"
+          ],
+          "grade": "good"
+        },
+        {
           "id": "SH9",
           "phase": "Ship",
           "label": "data retention + deletion",
           "pillars": [
             "Safety"
           ],
-          "grade": "weak"
+          "grade": "great"
         },
         {
           "id": "SH10",
@@ -1704,7 +1713,7 @@
             "Safety",
             "Reliability & Ownership"
           ],
-          "grade": "weak"
+          "grade": "great"
         },
         {
           "id": "GEN2",
@@ -1756,9 +1765,9 @@
           "grade": "great"
         }
       ],
-      "notes": "FounderFirst now encrypts Plaid access tokens at rest, and closing that found three read paths that would have broken had the write been encrypted alone. It is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 weak, GEN2 good) = 7.75; Safety = avg(E3 good, SH1 great, SH2 good, SH9 weak, SH10 weak) = 6.4; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.35) x 10) = 74. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "FounderFirst now encrypts Plaid access tokens at rest, and closing that found three read paths that would have broken had the write been encrypted alone. It is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH8 good, SH10 great, GEN2 good) = 8.33; Safety = avg(E3 good, SH1 great, SH2 good, SH9 great, SH10 great) = 8.8; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.681) x 10) = 77. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for FounderFirst: clear the dependency backlog. GitHub reports 5 critical and 21 high advisories open, and no pnpm audit, secret scanning or SAST runs in any of the 16 workflows, which the repo's own docs/AUDIT.md already requires. Xero tokens are also still written and read in plaintext, the same defect just fixed for Plaid.",
+      "next_focus": "Next for FounderFirst: validate the judge against human labels. It is the escalation authority over money critical answers and nothing measures whether it marks correctly, while categorization_outcomes already stores the labels the check would need.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     }
