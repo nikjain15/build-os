@@ -390,10 +390,10 @@
       "title": "Pulse",
       "date": "2026-08-01",
       "type": "agent",
-      "overall": 77,
+      "overall": 78,
       "pillars": {
         "Product Judgment": 7.5,
-        "System Design": 6.4,
+        "System Design": 7.0,
         "Evaluation": 7.0,
         "Reliability & Ownership": 7.43,
         "Safety": 7.75,
@@ -500,7 +500,7 @@
           "pillars": [
             "System Design"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "S8",
@@ -659,7 +659,7 @@
           "grade": "great"
         }
       ],
-      "notes": "Pulse has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 weak, S8 good) = 6.4; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 great) = 7.0; Reliability & Ownership = avg(B1 great, B2 good, B3 good, B4 good, B5 good, SH3 good, SH10 good) = 7.43; Safety = avg(E3 good, SH1 great, SH9 good, SH10 good) = 7.75; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.697) x 10) = 77. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 732 tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 great) = 7.0; Reliability & Ownership = avg(B1 great, B2 good, B3 good, B4 good, B5 good, SH3 good, SH10 good) = 7.43; Safety = avg(E3 good, SH1 great, SH9 good, SH10 good) = 7.75; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.772) x 10) = 78. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "System Design",
       "next_focus": "Next for Pulse: run the highest-value suites in CI. Add an emulator job to .github/workflows/ci.yml so the 253 rules, integration and e2e cases gate a merge instead of running only via npm run gate.",
       "loop_ran": true,
@@ -670,10 +670,10 @@
       "title": "Rally",
       "date": "2026-08-01",
       "type": "agent",
-      "overall": 70,
+      "overall": 71,
       "pillars": {
         "Product Judgment": 6.4,
-        "System Design": 6.4,
+        "System Design": 7.0,
         "Evaluation": 6.25,
         "Reliability & Ownership": 8.5,
         "Safety": 7.75,
@@ -780,7 +780,7 @@
           "pillars": [
             "System Design"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "S8",
@@ -930,7 +930,7 @@
           "grade": "good"
         }
       ],
-      "notes": "Rally runs the most complete eval loop of the five: a 50-case labelled set with precision, recall and F1 floors that block a merge, alongside 45 adversarial Firestore rules tests where each test name states a promise the product makes. The recognition ledger awards exactly once under retry, proven by integration tests on deterministic event ids. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 weak, S4 good) = 6.4; System Design = avg(S1 good, S2 great, S3 weak, S5 weak, S8 good) = 6.4; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 great, GEN1 good) = 8.5; Safety = avg(E3 good, SH1 good, SH2 good, SH10 great) = 7.75; Economics = avg(S1 good) = 7.0; Communication = avg(D1 good, SH4 good) = 7.0; UX/UI & Interaction = avg(S4 good, GEN1 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.037) x 10) = 70. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "Rally now recovers a transient rate limit instead of silently dropping to its deterministic baseline, with per-call-site budgets and the provider SDK own-retries switched off so the two layers cannot multiply. It runs the most complete eval loop of the five: a 50-case labelled set with precision, recall and F1 floors that block a merge, alongside 45 adversarial Firestore rules tests where each test name states a promise the product makes. The recognition ledger awards exactly once under retry, proven by integration tests on deterministic event ids. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 weak, S4 good) = 6.4; System Design = avg(S1 good, S2 great, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 great, GEN1 good) = 8.5; Safety = avg(E3 good, SH1 good, SH2 good, SH10 great) = 7.75; Economics = avg(S1 good) = 7.0; Communication = avg(D1 good, SH4 good) = 7.0; UX/UI & Interaction = avg(S4 good, GEN1 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.112) x 10) = 71. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
       "next_focus": "Next for Rally: capture one eval run with a live API key so the model layer is measured against the deterministic baseline rather than compared to itself, and publish the numbers in docs/EVALS.md.",
       "loop_ran": true,
@@ -941,10 +941,10 @@
       "title": "RoleOS",
       "date": "2026-08-01",
       "type": "agent",
-      "overall": 71,
+      "overall": 72,
       "pillars": {
         "Product Judgment": 6.57,
-        "System Design": 7.38,
+        "System Design": 7.75,
         "Evaluation": 6.4,
         "Reliability & Ownership": 7.6,
         "Safety": 8.0,
@@ -1069,7 +1069,7 @@
           "pillars": [
             "System Design"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "B1",
@@ -1285,7 +1285,7 @@
           "grade": "good"
         }
       ],
-      "notes": "RoleOS holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 weak, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.38; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 good, SH2 great, SH9 weak, SH10 great, AG4 great) = 8.0; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good) = 7.0; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.119) x 10) = 71. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "RoleOS added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 good, SH2 great, SH9 weak, SH10 great, AG4 great) = 8.0; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good) = 7.0; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.165) x 10) = 72. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
       "next_focus": "Next for RoleOS: score the retriever that actually ships. Run evals/retrieval/live/capture.ts once and commit dataset.semantic.json so the CI gate measures the bge and pgvector path instead of the TF-IDF stand-in.",
       "loop_ran": true,
