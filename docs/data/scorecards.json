@@ -1028,7 +1028,7 @@
       "title": "RoleOS",
       "date": "2026-08-02",
       "type": "agent",
-      "overall": 71,
+      "overall": 74,
       "pillars": {
         "Product Judgment": 6.57,
         "System Design": 7.75,
@@ -1036,9 +1036,9 @@
         "Reliability & Ownership": 7.3,
         "Safety": 7.5,
         "Economics": 7.0,
-        "Communication": 7.0,
+        "Communication": 7.75,
         "UX/UI & Interaction": 7.0,
-        "Collaboration & Stakeholders": null
+        "Collaboration & Stakeholders": 9.0
       },
       "artifacts": {
         "PRD.md": true,
@@ -1370,11 +1370,40 @@
             "Reliability & Ownership"
           ],
           "grade": "good"
+        },
+        {
+          "id": "D5",
+          "phase": "Discovery",
+          "label": "who else has a say",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "SH5",
+          "phase": "Ship",
+          "label": "sign-offs before launch",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "CS1",
+          "phase": "Retro",
+          "label": "pushback and what changed",
+          "pillars": [
+            "Collaboration & Stakeholders"
+          ],
+          "grade": "great"
         }
       ],
-      "notes": "RoleOS added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 good, GEN1 good, GEN2 good) = 7.3; Safety = avg(E3 good, SH1 good, SH2 great, SH9 weak, SH10 good, AG4 great) = 7.5; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good) = 7.0; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.065) x 10) = 71. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "RoleOS added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 good, GEN1 good, GEN2 good) = 7.3; Safety = avg(E3 good, SH1 good, SH2 great, SH9 weak, SH10 good, AG4 great) = 7.5; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.363) x 10) = 74. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for RoleOS: score the retriever that actually ships. Run evals/retrieval/live/capture.ts once and commit dataset.semantic.json so the CI gate measures the bge and pgvector path instead of the TF-IDF stand-in.",
+      "next_focus": "Next for RoleOS: give candidates a privacy notice, a written retention window and a working delete control. The product ingests CVs, which are personal data, and today there is no notice, no lawful-basis statement, no purge job and no delete path in settings. After that, run evals/retrieval/live/capture.ts so the CI gate measures the bge and pgvector path that actually ships rather than a TF-IDF stand-in.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
