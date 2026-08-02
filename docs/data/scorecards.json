@@ -337,7 +337,7 @@
       ],
       "notes": "FounderFirst now encrypts Plaid access tokens at rest, and closing that found three read paths that would have broken had the write been encrypted alone. It is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH8 good, SH10 great, GEN2 good) = 8.33; Safety = avg(E3 good, SH1 great, SH2 good, SH9 great, SH10 great) = 8.8; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.681) x 10) = 77. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for FounderFirst: extend the dependency gate to the Python services. scripts/audit-gate.mjs reads three npm trees and no requirements.txt, while tools/kokoro-server runs live on Fly as the default audio engine and carries advisories that no CI check can ever fail on, three of them with no fix at any version.",
+      "next_focus": "Next for FounderFirst: judge validation (E2), the last weak. The audit gate now covers all five trees including both Python services, kokoro-server runs torch 2.13.0 with zero advisories, and two gate defects are fixed: R5 was reporting live allowlist entries as stale and telling us to delete them, and a setuptools<81 ceiling was hiding GHSA-h35f-9h28-mq5c on the live voice engine. What is still unmeasured is whether content_judge.ts marks correctly.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
@@ -736,7 +736,7 @@
       "pillars": {
         "Product Judgment": 7.5,
         "System Design": 7.0,
-        "Evaluation": 7.0,
+        "Evaluation": 7.6,
         "Reliability & Ownership": 8.12,
         "Safety": 8.5,
         "Economics": 10.0,
@@ -914,7 +914,7 @@
           "pillars": [
             "Evaluation"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "E3",
@@ -1039,7 +1039,7 @@
           "grade": "great"
         }
       ],
-      "notes": "Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 732 tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 great) = 7.0; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 good, B5 good, SH3 good, SH8 good, SH10 great) = 8.12; Safety = avg(E3 good, SH1 great, SH9 good, SH10 great) = 8.5; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good, D5 great, SH5 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (8.069) x 10) = 81. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 816 unit tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 good, E3 good, E4 good, E5 great) = 7.6; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 good, B5 good, SH3 good, SH8 good, SH10 great) = 8.12; Safety = avg(E3 good, SH1 great, SH9 good, SH10 great) = 8.5; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good, D5 great, SH5 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (8.069) x 10) = 81. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. E2 moves weak to good on 2026-08-02: judgeGroundedness now has a validation harness (evals/judge-metrics.ts, a 24-case set class balanced 12/12, Cohen's kappa reported beside the base rate and both per-class rates, grading the shipped judge). It stops at good, not great, because no keyed run has happened yet, so no kappa exists and ENFORCED ships empty. Structure alone caps at good. Found while doing it: npm run eval:groundedness had been crashing on ERR_MODULE_NOT_FOUND before scoring a single case, and no CI job ran any eval script, so it failed silently on every invocation. Both fixed; the check job now runs all three offline evals.",
       "weakest_pillar": "System Design",
       "next_focus": "Next for Pulse: schedule the retention sweep and wire an alerting channel. The windows and the health thresholds are both defined and enforced in code, but nothing runs the sweep on a timer and nothing notifies anyone when a threshold trips.",
       "loop_ran": true,
