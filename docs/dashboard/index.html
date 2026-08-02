@@ -76,6 +76,15 @@
   .bar { height:5px; background:var(--line); border-radius:9px; overflow:hidden; margin:6px 0 10px; }
   .bar>i { display:block; height:100%; background:var(--accent); }
   .meta { font-family:var(--mono); font-size:11.5px; color:var(--faint); margin-bottom:9px; }
+  /* Grade mix: how this project's graded questions actually fell. Same data the
+     heatmap shows, summarised per project, so a reader sees the shape behind the
+     number rather than the number alone. */
+  .gbar { display:flex; height:7px; border-radius:9px; overflow:hidden; margin:2px 0 7px; gap:2px; }
+  .gbar>i { display:block; height:100%; border-radius:2px; }
+  .s-great { background:var(--good); } .s-good { background:var(--warn); } .s-weak { background:var(--bad); }
+  .glegend { display:flex; flex-wrap:wrap; gap:9px; font-size:11.5px; color:var(--muted); margin-bottom:11px; align-items:center; }
+  .glegend .dot { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:4px; vertical-align:-1px; }
+  .glegend .tot { color:var(--faint); margin-left:auto; }
   .pill { display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin:2px 0; }
   .pill .num { color:var(--ink); }
   .arts { margin-top:10px; font-size:12px; display:flex; flex-wrap:wrap; gap:5px; }
@@ -164,7 +173,7 @@
       <canvas id="radar" height="260"></canvas></div>
     <div class="card"><h2>Improvement over time<button class="info" data-tip="Projects in build order, left to right. The solid line is each project's overall score; the faint dashed lines are the nine individual pillars. Rising lines mean each build is starting from a higher bar.">i</button></h2><div class="h-sub">Overall score across projects. Am I compounding?</div><canvas id="trend" height="260"></canvas></div>
     <div class="card full">
-      <div class="card-head"><div><h2>Projects<button class="info" data-tip="One card per scored product. The big number is its overall score out of 100; below are the nine pillar scores (0 to 10). The chips show which of the 13 Build OS artifacts exist in the repo: green means present. The note at the bottom is that project's single next improvement.">i</button></h2><div class="h-sub">Per-project scorecards: grade, pillars, artifacts, next focus</div></div>
+      <div class="card-head"><div><h2>Projects<button class="info" data-tip="One card per scored product. The big number is its overall score out of 100. Under it, the grade mix shows how that project's questions actually fell: green great, amber good, red weak. Great is the top tier and is only awarded when the evidence survives a follow-up probe, so most solid work sits at good. Then the nine pillar scores (0 to 10), the 13 Build OS artifacts (green means present in the repo), and that project's single next improvement.">i</button></h2><div class="h-sub">Per-project scorecards: grade mix, pillars, artifacts, next focus</div></div>
         <input class="search" id="pSearch" type="search" placeholder="Filter projects: name, type, pillar…" aria-label="Filter projects"></div>
       <div class="pcards" id="pcards"></div><div class="empty-note" id="pEmpty" style="display:none">No projects match that filter.</div></div>
     <div class="card full">
@@ -266,10 +275,22 @@ function render(data){
     const arts=Object.entries(p.artifacts).map(([k,v])=>`<span class="art ${v?'ok':'no'}">${v?'✓':'✗'} ${k.replace('.md','')}</span>`).join('');
     const pills=PILLARS.map(k=>`<div class="pill"><span>${k}</span><span class="num">${p.pillars[k]==null?'n/a':p.pillars[k]+'/10'}</span></div>`).join('');
     const hay=[p.title,p.project,p.type,p.weakest_pillar,p.next_focus].join(' ').toLowerCase();
+    // Grade mix. The overall number hides the shape: a project can sit in the
+    // seventies because most answers are "good", which is solid practice, not a
+    // failing repo. Counts are printed, not just drawn, so the bar is readable
+    // rather than decorative. Rendered only when questions exist.
+    const qs=p.questions||[], gc={great:0,good:0,weak:0};
+    qs.forEach(q=>{ if(gc[q.grade]!==undefined) gc[q.grade]++; });
+    const gt=gc.great+gc.good+gc.weak;
+    const seg=(n,cls)=>n?`<i class="${cls}" style="width:${(n/gt*100).toFixed(1)}%"></i>`:'';
+    const leg=(n,cls,lbl)=>n?`<span><i class="dot ${cls}"></i>${n} ${lbl}</span>`:'';
+    const mix=gt?`<div class="gbar" title="${gc.great} great, ${gc.good} good, ${gc.weak} weak">
+        ${seg(gc.great,'s-great')}${seg(gc.good,'s-good')}${seg(gc.weak,'s-weak')}</div>
+      <div class="glegend">${leg(gc.great,'s-great','great')}${leg(gc.good,'s-good','good')}${leg(gc.weak,'s-weak','weak')}<span class="tot">${gt} graded</span></div>`:'';
     return `<div class="pcard" data-q="${hay.replace(/"/g,'')}"><div class="top"><span class="name">${p.title}</span><span class="score">${p.overall}<span class="u">/100</span></span></div>
       <div class="bar"><i style="width:${p.overall}%"></i></div>
       <div class="meta">${p.date} · ${p.type}</div>
-      ${pills}<div class="arts">${arts}</div>
+      ${mix}${pills}<div class="arts">${arts}</div>
       ${p.next_focus?`<div class="note">${p.next_focus}</div>`:''}</div>`;}).join('');
   // Heatmap (data-q carries label + id + grades for the filter)
   const labels={}; P.forEach(p=>(p.questions||[]).forEach(q=>{labels[q.id]=q.label||q.id;}));
