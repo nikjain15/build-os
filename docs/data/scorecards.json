@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-01",
+  "updated": "2026-08-02",
   "owner": "nikjain15",
   "note": "Content-quality scorecards from a Build OS deep audit: every repo read for the quality of its docs, evals, tests and CI, every grade backed by a quoted file and line, then an interview and a fix pass. Supersedes the earlier evidence-only scoring, which counted artifacts existing rather than holding up.",
   "projects": [
     {
       "project": "conduit",
       "title": "Conduit",
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "type": "api",
       "overall": 72,
       "pillars": {
@@ -417,7 +417,7 @@
     {
       "project": "pulse",
       "title": "Pulse",
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "type": "agent",
       "overall": 78,
       "pillars": {
@@ -697,7 +697,7 @@
     {
       "project": "rally",
       "title": "Rally",
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "type": "agent",
       "overall": 71,
       "pillars": {
@@ -968,7 +968,7 @@
     {
       "project": "roleos-app",
       "title": "RoleOS",
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "type": "agent",
       "overall": 72,
       "pillars": {
@@ -1323,7 +1323,7 @@
     {
       "project": "founderfirst-one",
       "title": "FounderFirst",
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "type": "agent",
       "overall": 72,
       "pillars": {
