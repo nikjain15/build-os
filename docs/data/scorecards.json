@@ -1017,9 +1017,9 @@
           "grade": "great"
         }
       ],
-      "notes": "Rally now recovers a transient rate limit instead of silently dropping to its deterministic baseline, with per-call-site budgets and the provider SDK own-retries switched off so the two layers cannot multiply. It runs the most complete eval loop of the five: a 50-case labelled set with precision, recall and F1 floors that block a merge, alongside 45 adversarial Firestore rules tests where each test name states a promise the product makes. The recognition ledger awards exactly once under retry, proven by integration tests on deterministic event ids. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 weak, S4 good) = 6.4; System Design = avg(S1 good, S2 great, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 good, GEN1 good) = 8.12; Safety = avg(E3 good, SH1 good, SH2 good, SH10 good) = 7.0; Economics = avg(S1 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.28) x 10) = 73. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "Rally closed a recognition farming path found by its own design review: writing your own thanks now pays the author nothing, and a per-pair rolling allowance bounds what two people can mint, while the thank-you still posts publicly so genuine recognition is untouched. It also recovers a transient rate limit instead of silently dropping to its deterministic baseline, with per-call-site budgets and the provider SDK own-retries switched off so the two layers cannot multiply. It runs the most complete eval loop of the five: a 50-case labelled set with precision, recall and F1 floors that block a merge, alongside 45 adversarial Firestore rules tests where each test name states a promise the product makes. The recognition ledger awards exactly once under retry, proven by integration tests on deterministic event ids. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 weak, S4 good) = 6.4; System Design = avg(S1 good, S2 great, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 good, GEN1 good) = 8.12; Safety = avg(E3 good, SH1 good, SH2 good, SH10 good) = 7.0; Economics = avg(S1 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.28) x 10) = 73. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for Rally: close the recognition farming path in lib/recognition-admin.ts, where a message author is the helped party and may confirm their own award, so a cooperating pair can mint points repeatedly without any client writing to the ledger.",
+      "next_focus": "Next for Rally: publish one eval run with a live API key, so the model layer is measured against the deterministic baseline instead of compared to itself in a keyless CI run.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
@@ -1034,7 +1034,7 @@
         "System Design": 7.75,
         "Evaluation": 6.4,
         "Reliability & Ownership": 7.3,
-        "Safety": 7.5,
+        "Safety": 8.0,
         "Economics": 7.0,
         "Communication": 7.75,
         "UX/UI & Interaction": 7.0,
@@ -1310,7 +1310,7 @@
           "pillars": [
             "Safety"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "SH10",
@@ -1401,9 +1401,9 @@
           "grade": "great"
         }
       ],
-      "notes": "RoleOS added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 good, GEN1 good, GEN2 good) = 7.3; Safety = avg(E3 good, SH1 good, SH2 great, SH9 weak, SH10 good, AG4 great) = 7.5; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.363) x 10) = 74. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 good, GEN1 good, GEN2 good) = 7.3; Safety = avg(E3 good, SH1 good, SH2 great, SH9 good, SH10 good, AG4 great) = 8.0; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.419) x 10) = 74. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for RoleOS: give candidates a privacy notice, a written retention window and a working delete control. The product ingests CVs, which are personal data, and today there is no notice, no lawful-basis statement, no purge job and no delete path in settings. After that, run evals/retrieval/live/capture.ts so the CI gate measures the bge and pgvector path that actually ships rather than a TF-IDF stand-in.",
+      "next_focus": "Next for RoleOS: run evals/retrieval/live/capture.ts and commit dataset.semantic.json, so the CI matching SLA measures the bge and pgvector retriever that actually ships rather than the TF-IDF stand-in it scores today.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
@@ -1412,17 +1412,17 @@
       "title": "FounderFirst",
       "date": "2026-08-02",
       "type": "agent",
-      "overall": 72,
+      "overall": 74,
       "pillars": {
         "Product Judgment": 7.0,
         "System Design": 8.0,
         "Evaluation": 6.25,
-        "Reliability & Ownership": 8.12,
-        "Safety": 7.6,
+        "Reliability & Ownership": 7.75,
+        "Safety": 6.4,
         "Economics": 7.0,
-        "Communication": 7.0,
+        "Communication": 7.75,
         "UX/UI & Interaction": 7.0,
-        "Collaboration & Stakeholders": null
+        "Collaboration & Stakeholders": 9.0
       },
       "artifacts": {
         "PRD.md": true,
@@ -1667,7 +1667,7 @@
           "pillars": [
             "Safety"
           ],
-          "grade": "good"
+          "grade": "weak"
         },
         {
           "id": "SH10",
@@ -1677,7 +1677,7 @@
             "Safety",
             "Reliability & Ownership"
           ],
-          "grade": "good"
+          "grade": "weak"
         },
         {
           "id": "GEN2",
@@ -1698,11 +1698,40 @@
             "Economics"
           ],
           "grade": "good"
+        },
+        {
+          "id": "D5",
+          "phase": "Discovery",
+          "label": "who else has a say",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "great"
+        },
+        {
+          "id": "SH5",
+          "phase": "Ship",
+          "label": "sign-offs before launch",
+          "pillars": [
+            "Collaboration & Stakeholders",
+            "Communication"
+          ],
+          "grade": "good"
+        },
+        {
+          "id": "CS1",
+          "phase": "Retro",
+          "label": "pushback and what changed",
+          "pillars": [
+            "Collaboration & Stakeholders"
+          ],
+          "grade": "great"
         }
       ],
-      "notes": "FounderFirst is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 good, GEN2 good) = 8.12; Safety = avg(E3 good, SH1 great, SH2 good, SH9 good, SH10 good) = 7.6; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good) = 7.0; UX/UI & Interaction = avg(S4 good) = 7.0. Overall = round(mean of 8 non-null pillars (7.246) x 10) = 72. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "FounderFirst now encrypts Plaid access tokens at rest, and closing that found three read paths that would have broken had the write been encrypted alone. It is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 weak, GEN2 good) = 7.75; Safety = avg(E3 good, SH1 great, SH2 good, SH9 weak, SH10 weak) = 6.4; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.35) x 10) = 74. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for FounderFirst: encrypt Plaid access tokens at rest. The encryption path already exists and protects QuickBooks tokens, but supabase/functions/plaid-exchange/index.ts writes access_token in plaintext and uses none of it, so the bank credential is the one secret left unprotected. Then clear the critical dependency alerts and add pnpm audit to CI, which its own docs/AUDIT.md already requires.",
+      "next_focus": "Next for FounderFirst: clear the dependency backlog. GitHub reports 5 critical and 21 high advisories open, and no pnpm audit, secret scanning or SAST runs in any of the 16 workflows, which the repo's own docs/AUDIT.md already requires. Xero tokens are also still written and read in plaintext, the same defect just fixed for Plaid.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     }
