@@ -1055,13 +1055,13 @@
       "title": "RoleOS",
       "date": "2026-08-02",
       "type": "agent",
-      "overall": 74,
+      "overall": 76,
       "pillars": {
         "Product Judgment": 6.57,
         "System Design": 7.75,
         "Evaluation": 6.4,
-        "Reliability & Ownership": 7.3,
-        "Safety": 8.0,
+        "Reliability & Ownership": 7.6,
+        "Safety": 9.0,
         "Economics": 7.0,
         "Communication": 7.75,
         "UX/UI & Interaction": 7.0,
@@ -1283,7 +1283,7 @@
           "pillars": [
             "Safety"
           ],
-          "grade": "good"
+          "grade": "great"
         },
         {
           "id": "SH2",
@@ -1347,7 +1347,7 @@
             "Safety",
             "Reliability & Ownership"
           ],
-          "grade": "good"
+          "grade": "great"
         },
         {
           "id": "AG1",
@@ -1428,9 +1428,9 @@
           "grade": "great"
         }
       ],
-      "notes": "RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 good, GEN1 good, GEN2 good) = 7.3; Safety = avg(E3 good, SH1 good, SH2 great, SH9 good, SH10 good, AG4 great) = 8.0; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.419) x 10) = 74. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 great, SH2 great, SH9 good, SH10 great, AG4 great) = 9.0; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.563) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Evaluation",
-      "next_focus": "Next for RoleOS: run evals/retrieval/live/capture.ts and commit dataset.semantic.json, so the CI matching SLA measures the bge and pgvector retriever that actually ships rather than the TF-IDF stand-in it scores today.",
+      "next_focus": "Next for RoleOS: run evals/retrieval/live/capture.ts and commit dataset.semantic.json. The eval now states plainly what it does and does not catch, and the runner will score and gate the semantic set the moment that file lands, but the retriever that actually ships is still unmeasured.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
