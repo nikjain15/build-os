@@ -12,7 +12,7 @@
       "pillars": {
         "Product Judgment": 7.0,
         "System Design": 7.6,
-        "Evaluation": 6.4,
+        "Evaluation": 7.0,
         "Reliability & Ownership": 7.0,
         "Safety": 7.43,
         "Economics": 7.0,
@@ -208,7 +208,7 @@
           "pillars": [
             "Evaluation"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "E3",
@@ -379,9 +379,9 @@
           "grade": "weak"
         }
       ],
-      "notes": "Conduit now evaluates what it ships. Two golden sets run against the real engine on every pull request with no API key, and the first run produced a real measurement: the guardrail catches every attack in the set (recall 1.00) while refusing 4 of 16 safe business inputs (precision 0.83). A default-deny agent loop means a side-effecting tool cannot run without explicit authority, which is the strongest safety artifact across the five products. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D6 good, D7 good, S4 good, S6 good, R1 good, API1 good) = 7.0; System Design = avg(S1 good, S2 great, S3 great, S5 good, S8 good, AG1 good, AG2 good, AG4 great, API1 good, API3 weak) = 7.6; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(D4 good, B1 good, B2 great, B3 good, B5 good, SH3 good, SH8 weak, SH10 good) = 7.0; Safety = avg(E3 good, SH1 good, SH2 great, SH7 good, SH9 weak, SH10 good, AG4 great) = 7.43; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 weak, API2 good, API3 weak) = 5.5; UX/UI & Interaction = avg(S4 good) = 7.0. Overall = round(mean of 8 non-null pillars (6.866) x 10) = 69. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
+      "notes": "Conduit now evaluates what it ships, and the judge is measured rather than assumed. On a 30-case class-balanced set, groundedness judging reaches Cohen's kappa 0.93 and is the one pair the repo claims; relevance judging sits at 0.13 and is explicitly barred from gating output until tuned. The cheap judge model turned out to reject every answer, which a raw catch rate would have shown as flawless. Guardrails catch every attack in the golden set (recall 1.00) while refusing 4 of 16 safe inputs (precision 0.83), and a default-deny agent loop means a side-effecting tool cannot run without explicit authority. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D6 good, D7 good, S4 good, S6 good, R1 good, API1 good) = 7.0; System Design = avg(S1 good, S2 great, S3 great, S5 good, S8 good, AG1 good, AG2 good, AG4 great, API1 good, API3 weak) = 7.6; Evaluation = avg(E1 good, E2 good, E3 good, E4 good, E5 good) = 7.0; Reliability & Ownership = avg(D4 good, B1 good, B2 great, B3 good, B5 good, SH3 good, SH8 weak, SH10 good) = 7.0; Safety = avg(E3 good, SH1 good, SH2 great, SH7 good, SH9 weak, SH10 good, AG4 great) = 7.43; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 weak, API2 good, API3 weak) = 5.5; UX/UI & Interaction = avg(S4 good) = 7.0. Overall = round(mean of 8 non-null pillars (6.941) x 10) = 69. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess.",
       "weakest_pillar": "Communication",
-      "next_focus": "Next for Conduit: validate the judge. Add /evals/dataset/judge-validation.jsonl with 30 human-labelled outputs and report agreement against the pass base rate, so every score the panel gives carries its own error rate.",
+      "next_focus": "Next for Conduit: tune the relevance rubric in evals/run-judge-validation.ts and re-run the validation, since at kappa 0.13 it would refuse two thirds of genuinely on-topic answers if it ever gated output.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
