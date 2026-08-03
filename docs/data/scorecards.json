@@ -349,7 +349,7 @@
       "type": "agent",
       "overall": 78,
       "pillars": {
-        "Product Judgment": 6.57,
+        "Product Judgment": 7.0,
         "Communication": 7.75,
         "Economics": 8.5,
         "System Design": 8.12,
@@ -419,7 +419,7 @@
           "pillars": [
             "Product Judgment"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "S6",
@@ -720,7 +720,7 @@
           "grade": "great"
         }
       ],
-      "notes": "Its tool loop is bounded by three limits rather than one, and closing that gap surfaced a live defect: at the turn cap the loop returned the text of a tool_use response, which is the model asking for another tool, so a cut-short run handed back an empty string and no explanation. The notice is now folded into the answer text. A token and USD run budget joins the turn cap, distinct from the rolling-24h alert in lib/cost-budget.ts, which never throws and so cannot stop the run in front of it. No default budget ships until agent_runs holds real loop costs. RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 great, AG4 great, GEN2 good) = 8.12; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 great, SH2 great, SH9 good, SH10 great, AG4 great) = 9.0; Economics = avg(S1 good, AG2 great) = 8.5; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.563) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs read agent/registry.json, giving $0.80 per candidate and $161/month at 200. The finding inverts the usual assumption: draft and code on Sonnet are 65% of spend and the Opus jobs a third, so output ceilings matter more than model tier. Prices were audited and RoleOS's were already correct. S1 stays GOOD: great needs a tested cheaper model, and there is no caching (documented, with the prompt sizes that would have to change first).",
+      "notes": "Its kill line is the one its own decision log said to write first: median cost per journey above $2.00 over 30 days, narrow to one gate. It needed no new instrumentation, since agent_runs already carries cost and a user id. The median rather than the mean is load-bearing, because one runaway journey drags any mean over any threshold and that case already belongs to the rolling-24h alert; nineteen candidates at $0.80 and one that burned $500 is holding, with the mean still reported so the incident stays visible. Graded good and not great, and the displayed score did not move at all: no 30-day window has been evaluated because there are no external users, and cost is the weakest of the six candidate metrics, since the five that would test whether RoleOS is any good all need users that do not exist. Its tool loop is bounded by three limits rather than one, and closing that gap surfaced a live defect: at the turn cap the loop returned the text of a tool_use response, which is the model asking for another tool, so a cut-short run handed back an empty string and no explanation. The notice is now folded into the answer text. A token and USD run budget joins the turn cap, distinct from the rolling-24h alert in lib/cost-budget.ts, which never throws and so cannot stop the run in front of it. No default budget ships until agent_runs holds real loop costs. RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 good, S6 good, S4 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 great, AG4 great, GEN2 good) = 8.12; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 great, SH2 great, SH9 good, SH10 great, AG4 great) = 9.0; Economics = avg(S1 good, AG2 great) = 8.5; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.563) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs read agent/registry.json, giving $0.80 per candidate and $161/month at 200. The finding inverts the usual assumption: draft and code on Sonnet are 65% of spend and the Opus jobs a third, so output ceilings matter more than model tier. Prices were audited and RoleOS's were already correct. S1 stays GOOD: great needs a tested cheaper model, and there is no caching (documented, with the prompt sizes that would have to change first).",
       "weakest_pillar": "Evaluation",
       "next_focus": "Next for RoleOS: run evals/retrieval/live/capture.ts and commit dataset.semantic.json. The eval now states plainly what it does and does not catch, and the runner will score and gate the semantic set the moment that file lands, but the retriever that actually ships is still unmeasured.",
       "loop_ran": true,
@@ -732,16 +732,16 @@
       "date": "2026-07-16",
       "last_scored": "2026-08-02",
       "type": "agent",
-      "overall": 81,
+      "overall": 84,
       "pillars": {
-        "Product Judgment": 7.5,
-        "System Design": 7.0,
-        "Evaluation": 7.6,
-        "Reliability & Ownership": 8.12,
-        "Safety": 8.5,
-        "Economics": 10.0,
+        "Product Judgment": 8.5,
         "Communication": 8.5,
+        "Economics": 10.0,
+        "System Design": 8.2,
         "UX/UI & Interaction": 7.0,
+        "Reliability & Ownership": 8.12,
+        "Evaluation": 7.6,
+        "Safety": 8.5,
         "Collaboration & Stakeholders": 9.0
       },
       "artifacts": {
@@ -795,7 +795,7 @@
           "pillars": [
             "Product Judgment"
           ],
-          "grade": "weak"
+          "grade": "great"
         },
         {
           "id": "S1",
@@ -823,7 +823,7 @@
           "pillars": [
             "System Design"
           ],
-          "grade": "weak"
+          "grade": "great"
         },
         {
           "id": "S4",
@@ -1039,8 +1039,8 @@
           "grade": "great"
         }
       ],
-      "notes": "Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 816 unit tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 weak, S4 good, GEN3 great) = 7.5; System Design = avg(S1 great, S2 good, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 good, E3 good, E4 good, E5 great) = 7.6; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 good, B5 good, SH3 good, SH8 good, SH10 great) = 8.12; Safety = avg(E3 good, SH1 great, SH9 good, SH10 great) = 8.5; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good, D5 great, SH5 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (8.069) x 10) = 81. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. E2 moves weak to good on 2026-08-02: judgeGroundedness now has a validation harness (evals/judge-metrics.ts, a 24-case set class balanced 12/12, Cohen's kappa reported beside the base rate and both per-class rates, grading the shipped judge). It stops at good, not great, because no keyed run has happened yet, so no kappa exists and ENFORCED ships empty. Structure alone caps at good. Found while doing it: npm run eval:groundedness had been crashing on ERR_MODULE_NOT_FOUND before scoring a single case, and no CI job ran any eval script, so it failed silently on every invocation. Both fixed; the check job now runs all three offline evals.",
-      "weakest_pillar": "System Design",
+      "notes": "Its kill line now has a number and a window. Degradation at or above 0.5 across seven days with at least 20 attempts turns auto-publish off and sends narratives to a human, and neither number is invented: both already existed in lib/health.ts with their reasoning. The window is the point, because the existing alert fires on one reading and one bad reading is a reason to look rather than to stop. A second criterion stays N=1 and dominates the first: one non-consented publication kills the design even in a perfectly healthy week, because a rate can be argued about and a person publicly attributed something they did not say cannot. K2 has a genuine checked result across the pilot, no such report, which is what carries this to great rather than the structure alone. ADR-0001 records the choice the line governs, and its honest half is that the guard checks shape and not truth: a clean sentence naming only its own actor that says something false passes every check, and judgeGroundedness was verified to be off the publish path rather than assumed to cover it. Pulse now retries a rate-limited model call with jitter inside a budget sized to the platform ceiling, then degrades to facts only, with 816 unit tests covering the ladder. It also has the clearest cost story of the five: caching takes 6,240 model calls a day down to 325, the before and after is labelled as modelled rather than metered, and a live spend counter now ships. Untrusted material is fenced as data at the prompt boundary and re-checked by a deterministic guard on every publish, and the guard fixture floors run offline in CI on every pull request. Pillar math: Product Judgment = avg(D1 great, D2 good, D7 good, R1 great, S4 good, GEN3 great) = 8.5; System Design = avg(S1 great, S2 good, S3 great, S5 good, S8 good) = 8.2; Evaluation = avg(E1 good, E2 good, E3 good, E4 good, E5 great) = 7.6; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 good, B5 good, SH3 good, SH8 good, SH10 great) = 8.12; Safety = avg(E3 good, SH1 great, SH9 good, SH10 great) = 8.5; Economics = avg(S1 great, GEN3 great) = 10.0; Communication = avg(D1 great, SH4 good, D5 great, SH5 good) = 8.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (8.069) x 10) = 81. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. E2 moves weak to good on 2026-08-02: judgeGroundedness now has a validation harness (evals/judge-metrics.ts, a 24-case set class balanced 12/12, Cohen's kappa reported beside the base rate and both per-class rates, grading the shipped judge). It stops at good, not great, because no keyed run has happened yet, so no kappa exists and ENFORCED ships empty. Structure alone caps at good. Found while doing it: npm run eval:groundedness had been crashing on ERR_MODULE_NOT_FOUND before scoring a single case, and no CI job ran any eval script, so it failed silently on every invocation. Both fixed; the check job now runs all three offline evals.",
+      "weakest_pillar": "UX/UI & Interaction",
       "next_focus": "Next for Pulse: schedule the retention sweep and wire an alerting channel. The windows and the health thresholds are both defined and enforced in code, but nothing runs the sweep on a timer and nothing notifies anyone when a threshold trips.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
@@ -1051,12 +1051,12 @@
       "date": "2026-07-18",
       "last_scored": "2026-08-02",
       "type": "agent",
-      "overall": 77,
+      "overall": 79,
       "pillars": {
-        "Product Judgment": 6.4,
+        "Product Judgment": 7.0,
         "Communication": 7.75,
         "Economics": 7.0,
-        "System Design": 7.0,
+        "System Design": 8.2,
         "UX/UI & Interaction": 8.5,
         "Reliability & Ownership": 8.67,
         "Evaluation": 7.75,
@@ -1114,7 +1114,7 @@
           "pillars": [
             "Product Judgment"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "S1",
@@ -1142,7 +1142,7 @@
           "pillars": [
             "System Design"
           ],
-          "grade": "weak"
+          "grade": "great"
         },
         {
           "id": "S4",
@@ -1358,7 +1358,7 @@
           "grade": "great"
         }
       ],
-      "notes": "Its detection score is now reported against the number it has to beat. Case-level agreement is 0.844 against a 0.531 majority baseline, Cohen's kappa 0.684, and two null models are committed as functions rather than remembered figures: crediting every at-handle scores 0.703 agreement, which reads as respectable because half the set does credit somebody, and never proposing anything scores a perfect zero false-positive rate and 1.0 precision while carrying no signal at all. A false-positive rate quoted alone would have ranked that second one above the shipped detector. Rally has no LLM judge on this path: grading is exact set matching on helper and kind, so there is nothing to drift and nothing to validate, which is the stronger option rather than the cheaper one. Rally closed a recognition farming path found by its own design review: writing your own thanks now pays the author nothing, and a per-pair rolling allowance bounds what two people can mint, while the thank-you still posts publicly so genuine recognition is untouched. It also recovers a transient rate limit instead of silently dropping to its deterministic baseline, with per-call-site budgets and the provider SDK own-retries switched off so the two layers cannot multiply. It runs the most complete eval loop of the five: a 50-case labelled set with precision, recall and F1 floors that block a merge, alongside 45 adversarial Firestore rules tests where each test name states a promise the product makes. The recognition ledger awards exactly once under retry, proven by integration tests on deterministic event ids. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 weak, S4 good) = 6.4; System Design = avg(S1 good, S2 great, S3 weak, S5 good, S8 good) = 7.0; Evaluation = avg(E1 good, E2 great, E3 good, E5 good) = 7.75; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 great, GEN1 great, SH8 good) = 8.67; Safety = avg(E3 good, SH1 good, SH2 good, SH10 great, SH9 good) = 7.6; Economics = avg(S1 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, GEN1 great) = 8.5; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.574) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs now give a figure at volume ($5.40/month at 30 members) and detection is cached. Found and fixed a 3x error: MODEL_PRICING carried Opus at $15/$75, which is Opus-3-era pricing, and it fed the live meter via estimateCostUsd. S1 stays GOOD, not great: great needs a smaller model tested on Rally's own examples and no such run exists. The cascade routes bulk work to Haiku because Haiku is cheap, not because it was measured as good enough.",
+      "notes": "Its kill line was blocked on engineering rather than on a number, and the blocker was one field. confirmRecognition flipped status in place and wrote no timestamp, so the suggested-to-confirmed transition left no trace in time and the decision log was right that Rally could not fail the test because it could not take it. confirmedAt now lands in the same transaction as the ledger entry, and the line is a confirm rate below 30% over four weeks on at least 100 suggestions, with a pivot rather than a tuning pass as the consequence. It measures a cohort rather than a snapshot, because confirmed over total right now is dragged down by suggestions nobody has had time to confirm and would make a busier product look like a failing one. Graded good and not great: no cohort can be read yet, and confirms predating the change read as unconfirmed, so the first honest window starts after that commit. ADR-0001 consolidates the ledger choice that was previously scattered across a code comment and three decision-log entries. Its detection score is now reported against the number it has to beat. Case-level agreement is 0.844 against a 0.531 majority baseline, Cohen's kappa 0.684, and two null models are committed as functions rather than remembered figures: crediting every at-handle scores 0.703 agreement, which reads as respectable because half the set does credit somebody, and never proposing anything scores a perfect zero false-positive rate and 1.0 precision while carrying no signal at all. A false-positive rate quoted alone would have ranked that second one above the shipped detector. Rally has no LLM judge on this path: grading is exact set matching on helper and kind, so there is nothing to drift and nothing to validate, which is the stronger option rather than the cheaper one. Rally closed a recognition farming path found by its own design review: writing your own thanks now pays the author nothing, and a per-pair rolling allowance bounds what two people can mint, while the thank-you still posts publicly so genuine recognition is untouched. It also recovers a transient rate limit instead of silently dropping to its deterministic baseline, with per-call-site budgets and the provider SDK own-retries switched off so the two layers cannot multiply. It runs the most complete eval loop of the five: a 50-case labelled set with precision, recall and F1 floors that block a merge, alongside 45 adversarial Firestore rules tests where each test name states a promise the product makes. The recognition ledger awards exactly once under retry, proven by integration tests on deterministic event ids. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S4 good) = 7.0; System Design = avg(S1 good, S2 great, S3 great, S5 good, S8 good) = 8.2; Evaluation = avg(E1 good, E2 great, E3 good, E5 good) = 7.75; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH10 great, GEN1 great, SH8 good) = 8.67; Safety = avg(E3 good, SH1 good, SH2 good, SH10 great, SH9 good) = 7.6; Economics = avg(S1 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, GEN1 great) = 8.5; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.574) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs now give a figure at volume ($5.40/month at 30 members) and detection is cached. Found and fixed a 3x error: MODEL_PRICING carried Opus at $15/$75, which is Opus-3-era pricing, and it fed the live meter via estimateCostUsd. S1 stays GOOD, not great: great needs a smaller model tested on Rally's own examples and no such run exists. The cascade routes bulk work to Haiku because Haiku is cheap, not because it was measured as good enough.",
       "weakest_pillar": "Product Judgment",
       "next_focus": "Next for Rally: publish one eval run with a live API key so the model layer is measured against the deterministic baseline rather than compared to itself, and schedule the retention sweep, which is written and enforced but not yet run by anything. The detection labels are one author's, so a second labeller would turn the kappa into genuine inter-rater agreement.",
       "loop_ran": true,
