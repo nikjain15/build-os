@@ -347,16 +347,16 @@
       "date": "2026-06-30",
       "last_scored": "2026-08-02",
       "type": "agent",
-      "overall": 76,
+      "overall": 78,
       "pillars": {
         "Product Judgment": 6.57,
-        "System Design": 7.75,
-        "Evaluation": 6.4,
-        "Reliability & Ownership": 7.6,
-        "Safety": 9.0,
-        "Economics": 7.0,
         "Communication": 7.75,
+        "Economics": 8.5,
+        "System Design": 8.12,
         "UX/UI & Interaction": 7.0,
+        "Reliability & Ownership": 7.6,
+        "Evaluation": 6.4,
+        "Safety": 9.0,
         "Collaboration & Stakeholders": 9.0
       },
       "artifacts": {
@@ -658,7 +658,7 @@
             "System Design",
             "Economics"
           ],
-          "grade": "good"
+          "grade": "great"
         },
         {
           "id": "AG4",
@@ -720,7 +720,7 @@
           "grade": "great"
         }
       ],
-      "notes": "RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 good, AG4 great, GEN2 good) = 7.75; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 great, SH2 great, SH9 good, SH10 great, AG4 great) = 9.0; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.563) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs read agent/registry.json, giving $0.80 per candidate and $161/month at 200. The finding inverts the usual assumption: draft and code on Sonnet are 65% of spend and the Opus jobs a third, so output ceilings matter more than model tier. Prices were audited and RoleOS's were already correct. S1 stays GOOD: great needs a tested cheaper model, and there is no caching (documented, with the prompt sizes that would have to change first).",
+      "notes": "Its tool loop is bounded by three limits rather than one, and closing that gap surfaced a live defect: at the turn cap the loop returned the text of a tool_use response, which is the model asking for another tool, so a cut-short run handed back an empty string and no explanation. The notice is now folded into the answer text. A token and USD run budget joins the turn cap, distinct from the rolling-24h alert in lib/cost-budget.ts, which never throws and so cannot stop the run in front of it. No default budget ships until agent_runs holds real loop costs. RoleOS now gives candidates a privacy notice, per-table retention enforced by a nightly purge, and a working delete path across 18 tables, with what deletion does not cover stated plainly. It added retry across its single model call path and found a real money bug doing it: spend from earlier tool-loop turns was discarded when a later turn failed, so the daily budget guard never saw it. It holds the strongest structural safety guarantee in the portfolio: no send tool exists, the single outbound route returns 501, and a CI import ban enforces it, so no prompt and no refactor can make the agent send on a user's behalf. Production deploys are now gated on a green CI run, and a new injection test exercising real shipped code runs on every pull request. The retrieval SLA (precision@10 at or above 0.5, MRR at or above 0.7) is measured over 689 real postings and blocks a merge. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D7 good, R1 weak, S6 good, S4 good) = 6.57; System Design = avg(S1 good, S2 great, S3 good, S5 good, AG1 good, AG2 great, AG4 great, GEN2 good) = 8.12; Evaluation = avg(E1 good, E2 weak, E3 good, E4 good, E5 good) = 6.4; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 weak, B5 good, SH3 good, SH8 good, SH10 great, GEN1 good, GEN2 good) = 7.6; Safety = avg(E3 good, SH1 great, SH2 great, SH9 good, SH10 great, AG4 great) = 9.0; Economics = avg(S1 good, AG2 great) = 8.5; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good, SH6 good, GEN1 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.563) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs read agent/registry.json, giving $0.80 per candidate and $161/month at 200. The finding inverts the usual assumption: draft and code on Sonnet are 65% of spend and the Opus jobs a third, so output ceilings matter more than model tier. Prices were audited and RoleOS's were already correct. S1 stays GOOD: great needs a tested cheaper model, and there is no caching (documented, with the prompt sizes that would have to change first).",
       "weakest_pillar": "Evaluation",
       "next_focus": "Next for RoleOS: run evals/retrieval/live/capture.ts and commit dataset.semantic.json. The eval now states plainly what it does and does not catch, and the runner will score and gate the semantic set the moment that file lands, but the retriever that actually ships is still unmeasured.",
       "loop_ran": true,
@@ -1370,16 +1370,16 @@
       "date": "2026-07-26",
       "last_scored": "2026-08-02",
       "type": "api",
-      "overall": 76,
+      "overall": 78,
       "pillars": {
         "Product Judgment": 7.0,
-        "System Design": 7.6,
-        "Evaluation": 7.6,
-        "Reliability & Ownership": 7.38,
-        "Safety": 9.14,
-        "Economics": 7.0,
         "Communication": 6.5,
+        "Reliability & Ownership": 7.38,
+        "Economics": 8.5,
+        "System Design": 7.9,
         "UX/UI & Interaction": 7.0,
+        "Evaluation": 7.6,
+        "Safety": 9.14,
         "Collaboration & Stakeholders": 9.0
       },
       "artifacts": {
@@ -1699,7 +1699,7 @@
             "System Design",
             "Economics"
           ],
-          "grade": "good"
+          "grade": "great"
         },
         {
           "id": "AG4",
@@ -1770,7 +1770,7 @@
           "grade": "great"
         }
       ],
-      "notes": "Conduit now evaluates what it ships, and an architecture review caught the repo overclaiming: the guardrail engine is not wired to any request path, so the docs that called it an enforced floor were corrected in place and the injection grade dropped to weak. The judge is measured rather than assumed. On a 30-case class-balanced set, groundedness judging reaches Cohen's kappa 0.93 and is the one pair the repo claims; relevance judging sits at 0.13 and is explicitly barred from gating output until tuned. The cheap judge model turned out to reject every answer, which a raw catch rate would have shown as flawless. Guardrails catch every attack in the golden set (recall 1.00) while refusing 4 of 16 safe inputs (precision 0.83), and a default-deny agent loop means a side-effecting tool cannot run without explicit authority. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D6 good, D7 good, S4 good, S6 good, R1 good, API1 good) = 7.0; System Design = avg(S1 good, S2 great, S3 great, S5 good, S8 good, AG1 good, AG2 good, AG4 great, API1 good, API3 weak) = 7.6; Evaluation = avg(E1 good, E2 good, E3 great, E4 good, E5 good) = 7.6; Reliability & Ownership = avg(D4 good, B1 good, B2 great, B3 good, B5 good, SH3 good, SH8 good, SH10 good) = 7.38; Safety = avg(E3 great, SH1 great, SH2 great, SH7 great, SH9 good, SH10 good, AG4 great) = 9.14; Economics = avg(S1 good, AG2 good) = 7.0; Communication = avg(D1 good, SH4 weak, API2 good, API3 weak, D5 great, SH5 good) = 6.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.58) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs parse the routing table and prices from core.ts, giving $66.30 per tenant per month and showing volume is a bad proxy for spend (chat is 78% of calls and 36% of cost). Also fixed: computeCostUsd returned 0 for any model missing from the price table, so a genuinely free model and an unpriced one produced the same number. S1 stays GOOD: great needs a tested cheaper model, and the gateway cache is deliberately off under D11 for tenant isolation.",
+      "notes": "Its agent loop is bounded by three limits rather than one: a step cap, a token and USD run budget, and repeated-state detection, each naming itself and returning a partial trace with an explanation. Loop detection keys on the tool call together with its result, so a poller does not false-halt, and it runs on successful calls only, because a repeated error is the information the model needs to recover. A follow-up caught the notice stopping at the library boundary, where an API caller would have seen a partial answer indistinguishable from a complete one, and carried it out to the wire contract. No default budget ships: choosing one needs real run costs and there is no traffic yet. Conduit now evaluates what it ships, and an architecture review caught the repo overclaiming: the guardrail engine is not wired to any request path, so the docs that called it an enforced floor were corrected in place and the injection grade dropped to weak. The judge is measured rather than assumed. On a 30-case class-balanced set, groundedness judging reaches Cohen's kappa 0.93 and is the one pair the repo claims; relevance judging sits at 0.13 and is explicitly barred from gating output until tuned. The cheap judge model turned out to reject every answer, which a raw catch rate would have shown as flawless. Guardrails catch every attack in the golden set (recall 1.00) while refusing 4 of 16 safe inputs (precision 0.83), and a default-deny agent loop means a side-effecting tool cannot run without explicit authority. Pillar math: Product Judgment = avg(D1 good, D2 good, D3 good, D6 good, D7 good, S4 good, S6 good, R1 good, API1 good) = 7.0; System Design = avg(S1 good, S2 great, S3 great, S5 good, S8 good, AG1 good, AG2 great, AG4 great, API1 good, API3 weak) = 7.9; Evaluation = avg(E1 good, E2 good, E3 great, E4 good, E5 good) = 7.6; Reliability & Ownership = avg(D4 good, B1 good, B2 great, B3 good, B5 good, SH3 good, SH8 good, SH10 good) = 7.38; Safety = avg(E3 great, SH1 great, SH2 great, SH7 great, SH9 good, SH10 good, AG4 great) = 9.14; Economics = avg(S1 good, AG2 great) = 8.5; Communication = avg(D1 good, SH4 weak, API2 good, API3 weak, D5 great, SH5 good) = 6.5; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.58) x 10) = 76. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs parse the routing table and prices from core.ts, giving $66.30 per tenant per month and showing volume is a bad proxy for spend (chat is 78% of calls and 36% of cost). Also fixed: computeCostUsd returned 0 for any model missing from the price table, so a genuinely free model and an unpriced one produced the same number. S1 stays GOOD: great needs a tested cheaper model, and the gateway cache is deliberately off under D11 for tenant isolation.",
       "weakest_pillar": "Communication",
       "next_focus": "Next for Conduit: record a 90 second walkthrough. The README still carries an empty demo placeholder, so Communication is now the weakest pillar and the cheapest one left to lift.",
       "loop_ran": true,
