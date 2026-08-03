@@ -9,16 +9,16 @@
       "date": "2026-01-17",
       "last_scored": "2026-08-02",
       "type": "agent",
-      "overall": 77,
+      "overall": 78,
       "pillars": {
         "Product Judgment": 7.0,
-        "System Design": 8.0,
-        "Evaluation": 6.25,
-        "Reliability & Ownership": 8.33,
-        "Safety": 8.8,
-        "Economics": 7.0,
         "Communication": 7.75,
+        "Economics": 7.0,
+        "System Design": 8.0,
         "UX/UI & Interaction": 7.0,
+        "Reliability & Ownership": 8.33,
+        "Evaluation": 7.0,
+        "Safety": 8.8,
         "Collaboration & Stakeholders": 9.0
       },
       "artifacts": {
@@ -200,7 +200,7 @@
           "pillars": [
             "Evaluation"
           ],
-          "grade": "weak"
+          "grade": "good"
         },
         {
           "id": "E3",
@@ -335,9 +335,9 @@
           "grade": "great"
         }
       ],
-      "notes": "FounderFirst now encrypts Plaid access tokens at rest, and closing that found three read paths that would have broken had the write been encrypted alone. It is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 weak, E3 good, E5 good) = 6.25; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH8 good, SH10 great, GEN2 good) = 8.33; Safety = avg(E3 good, SH1 great, SH2 good, SH9 great, SH10 great) = 8.8; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.681) x 10) = 77. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs give $2.00 per month per 4,000 transactions, $0.0005 all in. The headline is that 80% of transactions never reach a model at all, so the deterministic rule is worth more than the model cascade. Found and fixed the same 3x Opus price error Rally had, feeding ai_decisions. S1 stays GOOD: great needs a tested cheaper model. The 80% figure is a reading of a code comment, not a measurement, and the model is severely sensitive to it.",
-      "weakest_pillar": "Evaluation",
-      "next_focus": "Next for FounderFirst: judge validation (E2), the last weak. The audit gate now covers all five trees including both Python services, kokoro-server runs torch 2.13.0 with zero advisories, and two gate defects are fixed: R5 was reporting live allowlist entries as stale and telling us to delete them, and a setuptools<81 ceiling was hiding GHSA-h35f-9h28-mq5c on the live voice engine. What is still unmeasured is whether content_judge.ts marks correctly.",
+      "notes": "Its LLM-judge panel is now measurable, and is still unvalidated, which the docs now say. Everything the repo claimed about the panel was about how it is built, family-aware and fail-closed and injection-safe, and none of that is evidence it agrees with a human. There are now 40 human-labeled cases, class balanced 10 to 10 on each of the two binary gates, a metrics module reporting agreement next to the base rate it has to beat plus kappa and both per-class rates, and a runner that calls the shipped judge with the criteria copied from the live eval library. ENFORCED is empty on purpose: without a keyed run the runner prints SKIP rather than pass, and a pair that is absent is unmeasured rather than exempt. The arithmetic is PR-gated through pnpm build. FounderFirst now encrypts Plaid access tokens at rest, and closing that found three read paths that would have broken had the write been encrypted alone. It is the deepest system of the five and the only one with real resilience in the model path: bounded exponential backoff, hard timeouts, and a cheaper-model fallback where a spend cap is a fallback rather than a failure. Money is integer minor units by invariant, ingest dedupes exactly once on a shared external key, and three bespoke CI guards fail the build on any query that touches a tenant table without a tenant predicate. The autonomy ramp now states plainly that autonomy is off and documents how its thresholds get derived from production data. Pillar math: Product Judgment = avg(D1 good, D2 good, D7 good, R1 good, S6 good, S4 good, GEN3 good) = 7.0; System Design = avg(S1 good, S2 great, S3 good, S5 great, S8 good, GEN2 good) = 8.0; Evaluation = avg(E1 good, E2 good, E3 good, E5 good) = 7.0; Reliability & Ownership = avg(B1 great, B2 great, B3 good, B4 great, B5 good, SH3 good, SH8 good, SH10 great, GEN2 good) = 8.33; Safety = avg(E3 good, SH1 great, SH2 good, SH9 great, SH10 great) = 8.8; Economics = avg(S1 good, GEN3 good) = 7.0; Communication = avg(D1 good, SH4 good, D5 great, SH5 good) = 7.75; UX/UI & Interaction = avg(S4 good) = 7.0; Collaboration & Stakeholders = avg(D5 great, SH5 good, CS1 great) = 9.0. Overall = round(mean of 9 non-null pillars (7.681) x 10) = 77. Collaboration & Stakeholders is null: no stakeholder question was graded this run, so it stays a visible gap rather than a guess. Cost work 2026-08-02: docs/COST.md and scripts/cost-model.mjs give $2.00 per month per 4,000 transactions, $0.0005 all in. The headline is that 80% of transactions never reach a model at all, so the deterministic rule is worth more than the model cascade. Found and fixed the same 3x Opus price error Rally had, feeding ai_decisions. S1 stays GOOD: great needs a tested cheaper model. The 80% figure is a reading of a code comment, not a measurement, and the model is severely sensitive to it.",
+      "weakest_pillar": "Product Judgment",
+      "next_focus": "Next for FounderFirst: run pnpm eval:judge with a model credential. The harness, the labels and the floor are in place, so one keyed run turns the judge panel from unvalidated into measured and moves E2 from good to great. The kappa and both per-class rates belong in docs/EVALS.md section 8.5 in the same commit as the run.",
       "loop_ran": true,
       "projects_since_resource_refresh": 2
     },
