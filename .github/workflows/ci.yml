@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Scorecard schema and formula
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The README told a human to "run before commit". A habit is not a gate:
+      # it holds until the one commit someone is in a hurry on, which is exactly
+      # the commit that puts a broken scorecard on the public dashboard.
+      # GITHUB-STANDARDS.md rule 3.
+      - name: Validate scorecards
+        run: python3 scripts/validate_scorecards.py
+
+      # The dashboard reads these files directly in the browser. Malformed JSON
+      # renders as an empty page rather than an error, so it fails silently.
+      - name: Dashboard data parses
+        run: |
+          for f in docs/data/*.json; do
+            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f"
+            echo "ok  $f"
+          done

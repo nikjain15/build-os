@@ -207,7 +207,7 @@ Taken 2026-08-28 across 20 non-fork, non-archived repositories. `—` is absent,
 | agentic-payments | ✅ | ✅ | MIT | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nikjain15.github.io | ✅ | ✅ | — | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nikjain15 | ✅ | ✅ | — | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| clearhouse | ✅ | ✅ | MIT | ✅ | **w** | **—** | **—** | ✅ | **—** | ✅ |
+| clearhouse | ✅ | ✅ | MIT | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | conduit | ✅ | ✅ | MIT | ✅ | ✅ | **—** | ✅ | — | — | — |
 | lossless-modernization | ✅ | ✅ | MIT | — | ✅ | ✅ | ✅ | — | — | ✅ |
 | toddler-learning-companion | ✅ | ✅ | MIT | ✅ | **w** | ✅ | — | — | — | — |
@@ -215,7 +215,7 @@ Taken 2026-08-28 across 20 non-fork, non-archived repositories. `—` is absent,
 | hallmark | ✅ | — | — | ✅ | **w** | ✅ | — | — | — | — |
 | nik-ai-assistant | ✅ | ✅ | MIT | — | ✅ | — | — | — | — | — |
 | virtue-foundation-agent | ✅ | ✅ | MIT | — | ✅ | — | — | — | — | — |
-| build-os | ✅ | — | — | — | ✅ | — | — | — | — | — |
+| build-os | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nik-jain-jobos (private) | ✅ | — | — | — | n/a | — | ✅ | — | — | — |
 | role-os-private (private) | ✅ | — | — | — | n/a | — | — | — | — | — |
 | healthcare (private) | — | — | — | — | n/a | — | — | — | — | — |
@@ -225,18 +225,19 @@ rather than failing.
 
 ### What the snapshot says
 
-Four repositories — `rally`, `pulse`, `roleos-app`, `founderfirst.one` — pass every rule. They are
-the reference implementations, and the templates in `templates/github/` are extracted from them.
+Six repositories — `rally`, `pulse`, `roleos-app`, `founderfirst.one`, `clearhouse`, and this one —
+pass every applicable rule. The first four are the reference implementations, and the templates in
+`templates/github/` are extracted from them. `clearhouse` and `build-os` were brought up to the bar
+on 2026-08-28, in the same pass that wrote this document; `build-os` still carries no license, which
+is the one rule it fails.
 
 The most common gaps, in order:
 
-1. **CI absent in eight repositories.** Several are documentation-only, where a link checker is the
-   appropriate CI rather than a test suite. `build-os` itself ships
-   `scripts/validate_scorecards.py` with the instruction to *run before commit* — a validation that
-   should be a workflow, not a habit.
-2. **Secret scanning off in five.** This is a settings toggle and costs nothing.
-3. **`AGENTS.md` / `CLAUDE.md` missing in nine**, including `build-os`, which is the repository that
-   defines how agents should work.
+1. **CI absent in seven repositories.** Several are documentation-only, where a link checker is the
+   appropriate CI rather than a test suite. `build-os` shipped `scripts/validate_scorecards.py` with
+   the instruction to *run before commit* — a validation that is now a workflow rather than a habit.
+2. **Secret scanning off in three.** This is a settings toggle and costs nothing.
+3. **`AGENTS.md` / `CLAUDE.md` missing in seven**, after `clearhouse` and `build-os` were fixed.
 4. **`healthcare` has no description and no license** — the only repository failing rule 1 outright.
 
 ---
