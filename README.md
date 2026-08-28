@@ -16,6 +16,8 @@ Product Judgment · System Design · Evaluation · Reliability & Ownership · Sa
 /skill/SKILL.md            the Build OS itself (the question bank + loop)
 /skill/references/         source library the bank is anchored to
 /templates/                skeletons for every artifact the OS writes (keeps output consistent)
+/GITHUB-STANDARDS.md       the one repo bar: metadata, CI, protection, secrets, commits
+/templates/github/         copyable PR template, ci.yml, CLAUDE.md stub, branch-protection JSON
 /reusable/                 assets extracted from builds (R2) for reuse in the next one
 /LEARNINGS.md              the loop's memory — harvested failure modes → next questions
 /docs/index.html           the Build OS landing page (site-styled)
