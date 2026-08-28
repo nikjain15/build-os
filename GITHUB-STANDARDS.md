@@ -215,7 +215,7 @@ Taken 2026-08-28 across 20 non-fork, non-archived repositories. `—` is absent,
 | hallmark | ✅ | — | — | ✅ | **w** | ✅ | — | — | — | — |
 | nik-ai-assistant | ✅ | ✅ | MIT | — | ✅ | — | — | — | — | — |
 | virtue-foundation-agent | ✅ | ✅ | MIT | — | ✅ | — | — | — | — | — |
-| build-os | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| build-os | ✅ | ✅ | MIT | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nik-jain-jobos (private) | ✅ | — | — | — | n/a | — | ✅ | — | — | — |
 | role-os-private (private) | ✅ | — | — | — | n/a | — | — | — | — | — |
 | healthcare (private) | — | — | — | — | n/a | — | — | — | — | — |
@@ -228,8 +228,7 @@ rather than failing.
 Six repositories — `rally`, `pulse`, `roleos-app`, `founderfirst.one`, `clearhouse`, and this one —
 pass every applicable rule. The first four are the reference implementations, and the templates in
 `templates/github/` are extracted from them. `clearhouse` and `build-os` were brought up to the bar
-on 2026-08-28, in the same pass that wrote this document; `build-os` still carries no license, which
-is the one rule it fails.
+on 2026-08-28, in the same pass that wrote this document.
 
 The most common gaps, in order:
 
@@ -239,6 +238,9 @@ The most common gaps, in order:
 2. **Secret scanning off in three.** This is a settings toggle and costs nothing.
 3. **`AGENTS.md` / `CLAUDE.md` missing in seven**, after `clearhouse` and `build-os` were fixed.
 4. **`healthcare` has no description and no license** — the only repository failing rule 1 outright.
+5. **Six repositories carry no license**, so despite being public nobody may legally use them:
+   `nikjain15.github.io`, `hallmark`, and the four private repos. Rule 9 is the cheapest rule in this
+   document to satisfy and the one with the clearest consequence for getting it wrong.
 
 ---
 
